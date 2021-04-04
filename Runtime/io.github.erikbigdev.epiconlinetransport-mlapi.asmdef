@@ -1,0 +1,15 @@
+{
+    "name": "io.github.erikbigdev.epiconlinetransport-mlapi",
+    "references": [
+        "Unity.Multiplayer.MLAPI.Runtime"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
