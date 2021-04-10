@@ -3,7 +3,7 @@
 
 namespace Epic.OnlineServices.Ecom
 {
-	public sealed class EcomInterface : Handle
+	public sealed partial class EcomInterface : Handle
 	{
 		public EcomInterface()
 		{

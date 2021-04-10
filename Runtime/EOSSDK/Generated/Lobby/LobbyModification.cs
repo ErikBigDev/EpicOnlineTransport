@@ -3,7 +3,7 @@
 
 namespace Epic.OnlineServices.Lobby
 {
-	public sealed class LobbyModification : Handle
+	public sealed partial class LobbyModification : Handle
 	{
 		public LobbyModification()
 		{
@@ -42,6 +42,16 @@ namespace Epic.OnlineServices.Lobby
 		/// The most recent version of the <see cref="RemoveMemberAttribute" /> API.
 		/// </summary>
 		public const int LobbymodificationRemovememberattributeApiLatest = 1;
+
+		/// <summary>
+		/// The most recent version of the <see cref="LobbyModificationSetBucketIdOptions" /> API.
+		/// </summary>
+		public const int LobbymodificationSetbucketidApiLatest = 1;
+
+		/// <summary>
+		/// The most recent version of the <see cref="SetInvitesAllowed" /> API.
+		/// </summary>
+		public const int LobbymodificationSetinvitesallowedApiLatest = 1;
 
 		/// <summary>
 		/// The most recent version of the <see cref="SetMaxMembers" /> API.
@@ -146,6 +156,50 @@ namespace Epic.OnlineServices.Lobby
 		}
 
 		/// <summary>
+		/// Set the bucket ID associated with this lobby.
+		/// Values such as region, game mode, etc can be combined here depending on game need.
+		/// Setting this is strongly recommended to improve search performance.
+		/// </summary>
+		/// <param name="options">Options associated with the bucket ID of the lobby</param>
+		/// <returns>
+		/// <see cref="Result.Success" /> if setting this parameter was successful
+		/// <see cref="Result.InvalidParameters" /> if the bucket ID is invalid or null
+		/// <see cref="Result.IncompatibleVersion" /> if the API version passed in is incorrect
+		/// </returns>
+		public Result SetBucketId(LobbyModificationSetBucketIdOptions options)
+		{
+			System.IntPtr optionsAddress = new System.IntPtr();
+			Helper.TryMarshalSet<LobbyModificationSetBucketIdOptionsInternal, LobbyModificationSetBucketIdOptions>(ref optionsAddress, options);
+
+			var funcResult = EOS_LobbyModification_SetBucketId(InnerHandle, optionsAddress);
+
+			Helper.TryMarshalDispose(ref optionsAddress);
+
+			return funcResult;
+		}
+
+		/// <summary>
+		/// Allows enabling or disabling invites for this lobby.
+		/// The lobby will also need to have `bPresenceEnabled` true.
+		/// </summary>
+		/// <param name="options">Options associated with invites allowed flag for this lobby.</param>
+		/// <returns>
+		/// <see cref="Result.Success" /> if setting this parameter was successful
+		/// <see cref="Result.IncompatibleVersion" /> if the API version passed in is incorrect
+		/// </returns>
+		public Result SetInvitesAllowed(LobbyModificationSetInvitesAllowedOptions options)
+		{
+			System.IntPtr optionsAddress = new System.IntPtr();
+			Helper.TryMarshalSet<LobbyModificationSetInvitesAllowedOptionsInternal, LobbyModificationSetInvitesAllowedOptions>(ref optionsAddress, options);
+
+			var funcResult = EOS_LobbyModification_SetInvitesAllowed(InnerHandle, optionsAddress);
+
+			Helper.TryMarshalDispose(ref optionsAddress);
+
+			return funcResult;
+		}
+
+		/// <summary>
 		/// Set the maximum number of members allowed in this lobby.
 		/// When updating the lobby, it is not possible to reduce this number below the current number of existing members
 		/// </summary>
@@ -201,6 +255,12 @@ namespace Epic.OnlineServices.Lobby
 
 		[System.Runtime.InteropServices.DllImport(Config.BinaryName)]
 		internal static extern Result EOS_LobbyModification_RemoveMemberAttribute(System.IntPtr handle, System.IntPtr options);
+
+		[System.Runtime.InteropServices.DllImport(Config.BinaryName)]
+		internal static extern Result EOS_LobbyModification_SetBucketId(System.IntPtr handle, System.IntPtr options);
+
+		[System.Runtime.InteropServices.DllImport(Config.BinaryName)]
+		internal static extern Result EOS_LobbyModification_SetInvitesAllowed(System.IntPtr handle, System.IntPtr options);
 
 		[System.Runtime.InteropServices.DllImport(Config.BinaryName)]
 		internal static extern Result EOS_LobbyModification_SetMaxMembers(System.IntPtr handle, System.IntPtr options);

@@ -8,5 +8,6 @@ namespace Epic.OnlineServices.TitleStorage
 	/// </summary>
 	public delegate void OnReadFileCompleteCallback(ReadFileCallbackInfo data);
 
+	[System.Runtime.InteropServices.UnmanagedFunctionPointer(System.Runtime.InteropServices.CallingConvention.StdCall)]
 	internal delegate void OnReadFileCompleteCallbackInternal(System.IntPtr data);
 }

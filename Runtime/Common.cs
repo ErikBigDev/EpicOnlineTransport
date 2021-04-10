@@ -15,7 +15,8 @@ namespace EpicTransport {
 		protected enum InternalMessages : byte {
 			CONNECT,
 			ACCEPT_CONNECT,
-			DISCONNECT
+			DISCONNECT,
+			PING
 		}
 
 		protected struct PacketKey {
@@ -123,6 +124,19 @@ namespace EpicTransport {
 			});
 		}
 
+		protected void SendInternal(ProductUserId target, SocketId socketId, byte[] payload)
+		{
+			EOSSDKComponent.GetP2PInterface().SendPacket(new SendPacketOptions()
+			{
+				AllowDelayedDelivery = true,
+				Channel = (byte)internal_ch,
+				Data = payload,
+				LocalUserId = EOSSDKComponent.LocalUserProductId,
+				Reliability = PacketReliability.ReliableOrdered,
+				RemoteUserId = target,
+				SocketId = socketId
+			});
+		}
 
 		protected void Send(ProductUserId host, SocketId socketId, byte[] msgBuffer, byte channel) {
 			Result result = EOSSDKComponent.GetP2PInterface().SendPacket(new SendPacketOptions() {
@@ -140,7 +154,7 @@ namespace EpicTransport {
 			}
 		}
 
-		private bool Receive(out ProductUserId clientProductUserId, out SocketId socketId, out byte[] receiveBuffer, byte channel) {
+		internal bool Receive(out ProductUserId clientProductUserId, out SocketId socketId, out byte[] receiveBuffer, byte channel) {
 			Result result = EOSSDKComponent.GetP2PInterface().ReceivePacket(new ReceivePacketOptions() {
 				LocalUserId = EOSSDKComponent.LocalUserProductId,
 				MaxDataSizeBytes = P2PInterface.MaxPacketSize,
@@ -281,7 +295,10 @@ namespace EpicTransport {
 			}
 		}
 
-		protected abstract void OnReceiveInternalData(InternalMessages type, ProductUserId clientUserID, SocketId socketId);
+		public abstract ulong GetPing(ulong clientId = ulong.MaxValue);
+		public abstract void SendPing();
+
+		protected abstract void OnReceiveInternalData(InternalMessages type, ProductUserId clientUserID, SocketId socketId, byte[] payload = null);
 		protected abstract void OnReceiveData(byte[] data, ProductUserId clientUserID, int channel);
 		protected abstract void OnConnectionFailed(ProductUserId remoteId);
 	}

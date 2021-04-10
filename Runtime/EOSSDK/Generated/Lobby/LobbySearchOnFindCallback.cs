@@ -9,5 +9,6 @@ namespace Epic.OnlineServices.Lobby
 	/// <param name="data">A <see cref="LobbySearch.Find" /> CallbackInfo containing the output information and result</param>
 	public delegate void LobbySearchOnFindCallback(LobbySearchFindCallbackInfo data);
 
+	[System.Runtime.InteropServices.UnmanagedFunctionPointer(System.Runtime.InteropServices.CallingConvention.StdCall)]
 	internal delegate void LobbySearchOnFindCallbackInternal(System.IntPtr data);
 }

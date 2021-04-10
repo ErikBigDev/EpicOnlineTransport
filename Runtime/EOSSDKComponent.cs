@@ -34,7 +34,8 @@ namespace EpicTransport {
 		public Epic.OnlineServices.Auth.LoginCredentialType authInterfaceCredentialType = Epic.OnlineServices.Auth.LoginCredentialType.AccountPortal;
 		public uint devAuthToolPort = 7878;
 		public string devAuthToolCredentialName = "";
-		public Epic.OnlineServices.Connect.ExternalCredentialType connectInterfaceCredentialType = Epic.OnlineServices.Connect.ExternalCredentialType.DeviceidAccessToken;
+		
+		public ExternalCredentialType connectInterfaceCredentialType = ExternalCredentialType.DeviceidAccessToken;
 		public string deviceModel = "PC Windows 64bit";
 		[SerializeField] private string displayName = "User";
 		public static string DisplayName {
@@ -237,7 +238,7 @@ namespace EpicTransport {
 				EOS.GetAuthInterface().Login(loginOptions, null, OnAuthInterfaceLogin);
 			} else {
 				// Login to Connect Interface
-				if (connectInterfaceCredentialType == Epic.OnlineServices.Connect.ExternalCredentialType.DeviceidAccessToken) {
+				if (connectInterfaceCredentialType == ExternalCredentialType.DeviceidAccessToken) {
 					Epic.OnlineServices.Connect.CreateDeviceIdOptions createDeviceIdOptions = new Epic.OnlineServices.Connect.CreateDeviceIdOptions();
 					createDeviceIdOptions.DeviceModel = deviceModel;
 					EOS.GetConnectInterface().CreateDeviceId(createDeviceIdOptions, null, OnCreateDeviceId);
@@ -285,7 +286,7 @@ namespace EpicTransport {
 		private void ConnectInterfaceLogin() {
 			var loginOptions = new Epic.OnlineServices.Connect.LoginOptions();
 
-			if (connectInterfaceCredentialType == Epic.OnlineServices.Connect.ExternalCredentialType.Epic) {
+			if (connectInterfaceCredentialType == ExternalCredentialType.Epic) {
 				Epic.OnlineServices.Auth.Token token;
 				Result result = EOS.GetAuthInterface().CopyUserAuthToken(new Epic.OnlineServices.Auth.CopyUserAuthTokenOptions(), localUserAccountId, out token);
 
@@ -294,7 +295,7 @@ namespace EpicTransport {
 				} else {
 					Debug.LogError("Failed to retrieve User Auth Token");
 				}
-			} else if (connectInterfaceCredentialType == Epic.OnlineServices.Connect.ExternalCredentialType.DeviceidAccessToken) {
+			} else if (connectInterfaceCredentialType == ExternalCredentialType.DeviceidAccessToken) {
 				loginOptions.UserLoginInfo = new Epic.OnlineServices.Connect.UserLoginInfo();
 				loginOptions.UserLoginInfo.DisplayName = displayName;
 			}

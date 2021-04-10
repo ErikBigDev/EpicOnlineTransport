@@ -3,7 +3,7 @@
 
 namespace Epic.OnlineServices.P2P
 {
-	public sealed class P2PInterface : Handle
+	public sealed partial class P2PInterface : Handle
 	{
 		public P2PInterface()
 		{
@@ -17,6 +17,11 @@ namespace Epic.OnlineServices.P2P
 		/// The most recent version of the <see cref="AcceptConnection" /> API.
 		/// </summary>
 		public const int AcceptconnectionApiLatest = 1;
+
+		/// <summary>
+		/// The most recent version of the <see cref="AddNotifyIncomingPacketQueueFull" /> API.
+		/// </summary>
+		public const int AddnotifyincomingpacketqueuefullApiLatest = 1;
 
 		/// <summary>
 		/// The most recent version of the <see cref="AddNotifyPeerConnectionClosed" /> API.
@@ -49,6 +54,11 @@ namespace Epic.OnlineServices.P2P
 		public const int GetnextreceivedpacketsizeApiLatest = 2;
 
 		/// <summary>
+		/// The most recent version of the <see cref="GetPacketQueueInfo" /> API.
+		/// </summary>
+		public const int GetpacketqueueinfoApiLatest = 1;
+
+		/// <summary>
 		/// The most recent version of the <see cref="GetPortRange" /> API.
 		/// </summary>
 		public const int GetportrangeApiLatest = 1;
@@ -70,6 +80,11 @@ namespace Epic.OnlineServices.P2P
 		public const int MaxPacketSize = 1170;
 
 		/// <summary>
+		/// Helper constant to signify that the packet queue is allowed to grow indefinitely
+		/// </summary>
+		public const int MaxQueueSizeUnlimited = 0;
+
+		/// <summary>
 		/// The most recent version of the <see cref="QueryNATType" /> API.
 		/// </summary>
 		public const int QuerynattypeApiLatest = 1;
@@ -83,6 +98,11 @@ namespace Epic.OnlineServices.P2P
 		/// The most recent version of the <see cref="SendPacket" /> API.
 		/// </summary>
 		public const int SendpacketApiLatest = 2;
+
+		/// <summary>
+		/// The most recent version of the <see cref="SetPacketQueueSize" /> API.
+		/// </summary>
+		public const int SetpacketqueuesizeApiLatest = 1;
 
 		/// <summary>
 		/// The most recent version of the <see cref="SetPortRange" /> API.
@@ -120,7 +140,38 @@ namespace Epic.OnlineServices.P2P
 		}
 
 		/// <summary>
-		/// Listen for when a previously opened connection is closed
+		/// Listen for when our packet queue has become full. This event gives an opportunity to read packets to make
+		/// room for new incoming packets. If this event fires and no packets are read by calling <see cref="ReceivePacket" />
+		/// or the packet queue size is not increased by <see cref="SetPacketQueueSize" />, any packets that are received after
+		/// this event are discarded until there is room again in the queue.
+		/// </summary>
+		/// <param name="options">Information about what version of the <see cref="AddNotifyIncomingPacketQueueFull" /> API is supported</param>
+		/// <param name="clientData">Arbitrary data that is passed back to you in the CompletionDelegate</param>
+		/// <param name="incomingPacketQueueFullHandler">The callback to be fired when the incoming packet queue is full</param>
+		/// <returns>
+		/// A valid notification ID if successfully bound, or <see cref="Common.InvalidNotificationid" /> otherwise
+		/// </returns>
+		public ulong AddNotifyIncomingPacketQueueFull(AddNotifyIncomingPacketQueueFullOptions options, object clientData, OnIncomingPacketQueueFullCallback incomingPacketQueueFullHandler)
+		{
+			System.IntPtr optionsAddress = new System.IntPtr();
+			Helper.TryMarshalSet<AddNotifyIncomingPacketQueueFullOptionsInternal, AddNotifyIncomingPacketQueueFullOptions>(ref optionsAddress, options);
+
+			var clientDataAddress = System.IntPtr.Zero;
+
+			var incomingPacketQueueFullHandlerInternal = new OnIncomingPacketQueueFullCallbackInternal(OnIncomingPacketQueueFullCallbackInternalImplementation);
+			Helper.AddCallback(ref clientDataAddress, clientData, incomingPacketQueueFullHandler, incomingPacketQueueFullHandlerInternal);
+
+			var funcResult = EOS_P2P_AddNotifyIncomingPacketQueueFull(InnerHandle, optionsAddress, clientDataAddress, incomingPacketQueueFullHandlerInternal);
+
+			Helper.TryMarshalDispose(ref optionsAddress);
+
+			Helper.TryAssignNotificationIdToCallback(clientDataAddress, funcResult);
+
+			return funcResult;
+		}
+
+		/// <summary>
+		/// Listen for when a previously opened connection is closed.
 		/// </summary>
 		/// <param name="options">Information about who would like notifications about closed connections, and for which socket</param>
 		/// <param name="clientData">This value is returned to the caller when ConnectionClosedHandler is invoked</param>
@@ -265,6 +316,31 @@ namespace Epic.OnlineServices.P2P
 		}
 
 		/// <summary>
+		/// Gets the current cached information related to the incoming and outgoing packet queues.
+		/// </summary>
+		/// <param name="options">Information about what version of the <see cref="GetPacketQueueInfo" /> API is supported</param>
+		/// <param name="outPacketQueueInfo">The current information of the incoming and outgoing packet queues</param>
+		/// <returns>
+		/// <see cref="Result" />::<see cref="Result.Success" /> - if the input options were valid
+		/// <see cref="Result" />::<see cref="Result.InvalidParameters" /> - if the input was invalid in some way
+		/// </returns>
+		public Result GetPacketQueueInfo(GetPacketQueueInfoOptions options, out PacketQueueInfo outPacketQueueInfo)
+		{
+			System.IntPtr optionsAddress = new System.IntPtr();
+			Helper.TryMarshalSet<GetPacketQueueInfoOptionsInternal, GetPacketQueueInfoOptions>(ref optionsAddress, options);
+
+			var outPacketQueueInfoInternal = Helper.GetDefault<PacketQueueInfoInternal>();
+
+			var funcResult = EOS_P2P_GetPacketQueueInfo(InnerHandle, optionsAddress, ref outPacketQueueInfoInternal);
+
+			Helper.TryMarshalDispose(ref optionsAddress);
+
+			Helper.TryMarshalGet(outPacketQueueInfoInternal, out outPacketQueueInfo);
+
+			return funcResult;
+		}
+
+		/// <summary>
 		/// Get the current chosen port and the amount of other ports to try above the chosen port if the chosen port is unavailable.
 		/// </summary>
 		/// <param name="options">Information about what version of the <see cref="GetPortRange" /> API is supported</param>
@@ -317,18 +393,19 @@ namespace Epic.OnlineServices.P2P
 		/// Query the current NAT-type of our connection.
 		/// </summary>
 		/// <param name="options">Information about what version of the <see cref="QueryNATType" /> API is supported</param>
-		/// <param name="nATTypeQueriedHandler">The callback to be fired when we finish querying our NAT type</param>
-		public void QueryNATType(QueryNATTypeOptions options, object clientData, OnQueryNATTypeCompleteCallback nATTypeQueriedHandler)
+		/// <param name="clientData">arbitrary data that is passed back to you in the CompletionDelegate</param>
+		/// <param name="completionDelegate">The callback to be fired when we finish querying our NAT type</param>
+		public void QueryNATType(QueryNATTypeOptions options, object clientData, OnQueryNATTypeCompleteCallback completionDelegate)
 		{
 			System.IntPtr optionsAddress = new System.IntPtr();
 			Helper.TryMarshalSet<QueryNATTypeOptionsInternal, QueryNATTypeOptions>(ref optionsAddress, options);
 
 			var clientDataAddress = System.IntPtr.Zero;
 
-			var nATTypeQueriedHandlerInternal = new OnQueryNATTypeCompleteCallbackInternal(OnQueryNATTypeCompleteCallbackInternalImplementation);
-			Helper.AddCallback(ref clientDataAddress, clientData, nATTypeQueriedHandler, nATTypeQueriedHandlerInternal);
+			var completionDelegateInternal = new OnQueryNATTypeCompleteCallbackInternal(OnQueryNATTypeCompleteCallbackInternalImplementation);
+			Helper.AddCallback(ref clientDataAddress, clientData, completionDelegate, completionDelegateInternal);
 
-			EOS_P2P_QueryNATType(InnerHandle, optionsAddress, clientDataAddress, nATTypeQueriedHandlerInternal);
+			EOS_P2P_QueryNATType(InnerHandle, optionsAddress, clientDataAddress, completionDelegateInternal);
 
 			Helper.TryMarshalDispose(ref optionsAddress);
 		}
@@ -370,14 +447,29 @@ namespace Epic.OnlineServices.P2P
 
 			Helper.TryMarshalGet(outSocketIdInternal, out outSocketId);
 
-			Helper.TryMarshalGet(outDataAddress, out outData, outBytesWritten);
+			//User modification:
+			outData = new byte[outBytesWritten];
+			System.Runtime.InteropServices.Marshal.Copy(outDataAddress, outData, 0, (int)outBytesWritten);
+			//Helper.TryMarshalGet(outDataAddress, out outData, outBytesWritten);
+
 			Helper.TryMarshalDispose(ref outDataAddress);
 
 			return funcResult;
 		}
 
 		/// <summary>
-		/// Stop notifications for connections being closed on a previously bound handler
+		/// Stop listening for full incoming packet queue events on a previously bound handler.
+		/// </summary>
+		/// <param name="notificationId">The previously bound notification ID</param>
+		public void RemoveNotifyIncomingPacketQueueFull(ulong notificationId)
+		{
+			Helper.TryRemoveCallbackByNotificationId(notificationId);
+
+			EOS_P2P_RemoveNotifyIncomingPacketQueueFull(InnerHandle, notificationId);
+		}
+
+		/// <summary>
+		/// Stop notifications for connections being closed on a previously bound handler.
 		/// </summary>
 		/// <param name="notificationId">The previously bound notification ID</param>
 		public void RemoveNotifyPeerConnectionClosed(ulong notificationId)
@@ -388,7 +480,7 @@ namespace Epic.OnlineServices.P2P
 		}
 
 		/// <summary>
-		/// Stop listening for connection requests on a previously bound handler
+		/// Stop listening for connection requests on a previously bound handler.
 		/// </summary>
 		/// <param name="notificationId">The previously bound notification ID</param>
 		public void RemoveNotifyPeerConnectionRequest(ulong notificationId)
@@ -407,7 +499,7 @@ namespace Epic.OnlineServices.P2P
 		/// <returns>
 		/// <see cref="Result" />::<see cref="Result.Success" /> - If packet was queued to be sent successfully
 		/// <see cref="Result" />::<see cref="Result.InvalidParameters" /> - If input was invalid
-		/// <see cref="Result" />::<see cref="Result.LimitExceeded" /> - If amount of data being sent is too large
+		/// <see cref="Result" />::<see cref="Result.LimitExceeded" /> - If amount of data being sent is too large, or the outgoing packet queue was full
 		/// </returns>
 		public Result SendPacket(SendPacketOptions options)
 		{
@@ -415,6 +507,29 @@ namespace Epic.OnlineServices.P2P
 			Helper.TryMarshalSet<SendPacketOptionsInternal, SendPacketOptions>(ref optionsAddress, options);
 
 			var funcResult = EOS_P2P_SendPacket(InnerHandle, optionsAddress);
+
+			Helper.TryMarshalDispose(ref optionsAddress);
+
+			return funcResult;
+		}
+
+		/// <summary>
+		/// Sets the maximum packet queue sizes that packets waiting to be sent or received can use. If the packet queue
+		/// size is made smaller than the current queue size while there are packets in the queue that would push this
+		/// packet size over, existing packets are kept but new packets may not be added to the full queue until enough
+		/// packets are sent or received.
+		/// </summary>
+		/// <param name="options">Information about packet queue size</param>
+		/// <returns>
+		/// <see cref="Result" />::<see cref="Result.Success" /> - if the input options were valid
+		/// <see cref="Result" />::<see cref="Result.InvalidParameters" /> - if the input was invalid in some way
+		/// </returns>
+		public Result SetPacketQueueSize(SetPacketQueueSizeOptions options)
+		{
+			System.IntPtr optionsAddress = new System.IntPtr();
+			Helper.TryMarshalSet<SetPacketQueueSizeOptionsInternal, SetPacketQueueSizeOptions>(ref optionsAddress, options);
+
+			var funcResult = EOS_P2P_SetPacketQueueSize(InnerHandle, optionsAddress);
 
 			Helper.TryMarshalDispose(ref optionsAddress);
 
@@ -473,6 +588,17 @@ namespace Epic.OnlineServices.P2P
 			}
 		}
 
+		[MonoPInvokeCallback(typeof(OnIncomingPacketQueueFullCallbackInternal))]
+		internal static void OnIncomingPacketQueueFullCallbackInternalImplementation(System.IntPtr data)
+		{
+			OnIncomingPacketQueueFullCallback callback;
+			OnIncomingPacketQueueFullInfo callbackInfo;
+			if (Helper.TryGetAndRemoveCallback<OnIncomingPacketQueueFullCallback, OnIncomingPacketQueueFullInfoInternal, OnIncomingPacketQueueFullInfo>(data, out callback, out callbackInfo))
+			{
+				callback(callbackInfo);
+			}
+		}
+
 		[MonoPInvokeCallback(typeof(OnQueryNATTypeCompleteCallbackInternal))]
 		internal static void OnQueryNATTypeCompleteCallbackInternalImplementation(System.IntPtr data)
 		{
@@ -499,6 +625,9 @@ namespace Epic.OnlineServices.P2P
 		internal static extern Result EOS_P2P_AcceptConnection(System.IntPtr handle, System.IntPtr options);
 
 		[System.Runtime.InteropServices.DllImport(Config.BinaryName)]
+		internal static extern ulong EOS_P2P_AddNotifyIncomingPacketQueueFull(System.IntPtr handle, System.IntPtr options, System.IntPtr clientData, OnIncomingPacketQueueFullCallbackInternal incomingPacketQueueFullHandler);
+
+		[System.Runtime.InteropServices.DllImport(Config.BinaryName)]
 		internal static extern ulong EOS_P2P_AddNotifyPeerConnectionClosed(System.IntPtr handle, System.IntPtr options, System.IntPtr clientData, OnRemoteConnectionClosedCallbackInternal connectionClosedHandler);
 
 		[System.Runtime.InteropServices.DllImport(Config.BinaryName)]
@@ -517,16 +646,22 @@ namespace Epic.OnlineServices.P2P
 		internal static extern Result EOS_P2P_GetNextReceivedPacketSize(System.IntPtr handle, System.IntPtr options, ref uint outPacketSizeBytes);
 
 		[System.Runtime.InteropServices.DllImport(Config.BinaryName)]
+		internal static extern Result EOS_P2P_GetPacketQueueInfo(System.IntPtr handle, System.IntPtr options, ref PacketQueueInfoInternal outPacketQueueInfo);
+
+		[System.Runtime.InteropServices.DllImport(Config.BinaryName)]
 		internal static extern Result EOS_P2P_GetPortRange(System.IntPtr handle, System.IntPtr options, ref ushort outPort, ref ushort outNumAdditionalPortsToTry);
 
 		[System.Runtime.InteropServices.DllImport(Config.BinaryName)]
 		internal static extern Result EOS_P2P_GetRelayControl(System.IntPtr handle, System.IntPtr options, ref RelayControl outRelayControl);
 
 		[System.Runtime.InteropServices.DllImport(Config.BinaryName)]
-		internal static extern void EOS_P2P_QueryNATType(System.IntPtr handle, System.IntPtr options, System.IntPtr clientData, OnQueryNATTypeCompleteCallbackInternal nATTypeQueriedHandler);
+		internal static extern void EOS_P2P_QueryNATType(System.IntPtr handle, System.IntPtr options, System.IntPtr clientData, OnQueryNATTypeCompleteCallbackInternal completionDelegate);
 
 		[System.Runtime.InteropServices.DllImport(Config.BinaryName)]
 		internal static extern Result EOS_P2P_ReceivePacket(System.IntPtr handle, System.IntPtr options, ref System.IntPtr outPeerId, ref SocketIdInternal outSocketId, ref byte outChannel, System.IntPtr outData, ref uint outBytesWritten);
+
+		[System.Runtime.InteropServices.DllImport(Config.BinaryName)]
+		internal static extern void EOS_P2P_RemoveNotifyIncomingPacketQueueFull(System.IntPtr handle, ulong notificationId);
 
 		[System.Runtime.InteropServices.DllImport(Config.BinaryName)]
 		internal static extern void EOS_P2P_RemoveNotifyPeerConnectionClosed(System.IntPtr handle, ulong notificationId);
@@ -536,6 +671,9 @@ namespace Epic.OnlineServices.P2P
 
 		[System.Runtime.InteropServices.DllImport(Config.BinaryName)]
 		internal static extern Result EOS_P2P_SendPacket(System.IntPtr handle, System.IntPtr options);
+
+		[System.Runtime.InteropServices.DllImport(Config.BinaryName)]
+		internal static extern Result EOS_P2P_SetPacketQueueSize(System.IntPtr handle, System.IntPtr options);
 
 		[System.Runtime.InteropServices.DllImport(Config.BinaryName)]
 		internal static extern Result EOS_P2P_SetPortRange(System.IntPtr handle, System.IntPtr options);

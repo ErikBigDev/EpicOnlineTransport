@@ -3,7 +3,7 @@
 
 namespace Epic.OnlineServices.UI
 {
-	public sealed class UIInterface : Handle
+	public sealed partial class UIInterface : Handle
 	{
 		public UIInterface()
 		{
@@ -47,6 +47,16 @@ namespace Epic.OnlineServices.UI
 		/// The most recent version of the <see cref="HideFriends" /> API.
 		/// </summary>
 		public const int HidefriendsApiLatest = 1;
+
+		/// <summary>
+		/// The most recent version of the <see cref="PrePresent" /> API.
+		/// </summary>
+		public const int PrepresentApiLatest = 1;
+
+		/// <summary>
+		/// The most recent version of the <see cref="ReportKeyEvent" /> API.
+		/// </summary>
+		public const int ReportkeyeventApiLatest = 1;
 
 		/// <summary>
 		/// The most recent version of the <see cref="SetDisplayPreference" /> API.

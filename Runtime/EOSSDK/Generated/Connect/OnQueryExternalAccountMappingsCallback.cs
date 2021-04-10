@@ -4,10 +4,11 @@
 namespace Epic.OnlineServices.Connect
 {
 	/// <summary>
-	/// Function prototype definition for callbacks passed to <see cref="ConnectInterface.QueryExternalAccountMappings" />
+	/// Function prototype definition for callbacks passed to <see cref="ConnectInterface.QueryExternalAccountMappings" />.
 	/// </summary>
-	/// <param name="data">A <see cref="QueryExternalAccountMappingsCallbackInfo" /> containing the output information and result</param>
+	/// <param name="data">A <see cref="QueryExternalAccountMappingsCallbackInfo" /> containing the output information and result.</param>
 	public delegate void OnQueryExternalAccountMappingsCallback(QueryExternalAccountMappingsCallbackInfo data);
 
+	[System.Runtime.InteropServices.UnmanagedFunctionPointer(System.Runtime.InteropServices.CallingConvention.StdCall)]
 	internal delegate void OnQueryExternalAccountMappingsCallbackInternal(System.IntPtr data);
 }

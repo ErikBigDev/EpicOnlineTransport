@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
 using MLAPI;
@@ -8,6 +8,7 @@ using MLAPI.Transports;
 using MLAPI.Transports.Tasks;
 
 using Epic.OnlineServices.P2P;
+using Epic.OnlineServices;
 
 using UnityEngine;
 
@@ -19,26 +20,21 @@ namespace EpicTransport
 
 		internal PacketReliability[] Channels;
 
-		public float timeout = 7.0f;
-
 		SocketTask connectTask;
 
 		private Queue<NetworkEventInfo> networkEvents = new Queue<NetworkEventInfo>();
 
 		private List<ulong> connectedClients = new List<ulong>();
-		private Dictionary<ulong, ulong> pings = new Dictionary<ulong, ulong>();
 
 		private Client client;
 		private Server server;
 
-		//public Action<byte[], int> OnClientDataReceived;
-		//public Action OnClientConnected;
-		//public Action OnClientDisconnected;
-		//
-		//public Action<int> OnServerConnected;
-		//public Action<int, byte[], int> OnServerDataReceived;
-		//public Action<int> OnServerDisconnected;
-		//public Action<int, Exception> OnServerError;
+		static LowWrapperTransport instance;
+
+		public float timeout = 7.0f;
+
+		private const int MaxSinglePacketSize = P2PInterface.MaxPacketSize - 1;
+		private int packetId = 0;
 
 		public Action<ulong> OnCommonConnected;
 		public Action<ulong, byte[], int> OnCommonDataReceived;
@@ -63,12 +59,16 @@ namespace EpicTransport
 
 		public override ulong GetCurrentRtt(ulong clientId)
 		{
-			ulong ping;
+			ulong ping = 0;
 
-			if (pings.ContainsKey(clientId))
-				ping = pings[clientId];
-			else
+			if (NetworkManager.Singleton.IsHost && clientId == NetworkManager.Singleton.LocalClientId)
 				ping = 0;
+			else if (!NetworkManager.Singleton.IsServer && NetworkManager.Singleton.IsClient && clientId == NetworkManager.Singleton.LocalClientId)
+				ping = client.GetPing();
+			else if (NetworkManager.Singleton.IsServer && !NetworkManager.Singleton.IsClient)
+				ping = server.GetPing(clientId);
+			else
+				Debug.Log("Something went wrong");
 
 			Debug.Log($"Client {clientId} has ping {ping}");
 
@@ -77,6 +77,7 @@ namespace EpicTransport
 
 		public override void Init()
 		{
+			instance = this;
 			Debug.Assert(IsSupported, "This platform is not supported by current transport");
 
 			//OnClientConnected += OnClientConnect;
@@ -96,14 +97,11 @@ namespace EpicTransport
 
 			int count = MLAPI_CHANNELS.Length;
 
-			Channels = new PacketReliability[count + 3];
-			Channels[0] = PacketReliability.ReliableOrdered;
-			Channels[1] = PacketReliability.UnreliableUnordered;
-			Channels[2] = PacketReliability.ReliableOrdered;
-
+			Channels = new PacketReliability[count];
+			
 			for (int i = 0; i < count; i++)
 			{
-				Channels[i + 3] = ConvertNetworkDelivery(MLAPI_CHANNELS[i].Delivery);
+				Channels[i] = ConvertNetworkDelivery(MLAPI_CHANNELS[i].Delivery);
 			}
 		}
 
@@ -128,9 +126,10 @@ namespace EpicTransport
 				payload = info.payload;
 				receiveTime = info.receiveTime;
 
-				if(client != null && client.isConnecting && clientId == ServerClientId &&
+				if(connectTask != null && client != null && client.isConnecting && clientId == ServerClientId &&
 					(info.eventType == NetworkEvent.Connect || info.eventType == NetworkEvent.Disconnect))
 				{
+					Debug.Log("Connection with server:" + info.eventType);
 					if (info.eventType == NetworkEvent.Connect)
 						connectTask.Success = true;
 					if (info.eventType == NetworkEvent.Disconnect)
@@ -152,18 +151,42 @@ namespace EpicTransport
 
 		public override void Send(ulong clientId, ArraySegment<byte> data, NetworkChannel channel)
 		{
-			SendInternal(clientId, data, (byte)(channel + 3));
+			SendInternal(clientId, data, (byte)(channel + 1));
 		}
 
 		private void SendInternal(ulong clientId, ArraySegment<byte> data, byte channel)
 		{
-			byte[] arrayData = new byte[data.Count];
-			Array.Copy(data.Array, data.Offset, arrayData, 0, data.Count);
+			Packet[] packets = GetPacketArray(data);
 
-			if (clientId == ServerClientId)
-				client.Send(arrayData, channel);
-			else
-				server.SendAll(clientId, arrayData, channel);
+			for (int i = 0; i < packets.Length; i++)
+			{
+				if (clientId == ServerClientId)
+					client.Send(packets[i].ToBytes(), channel);
+				else
+					server.SendAll(clientId, packets[i].ToBytes(), channel);
+			}
+
+			packetId++;
+		}
+
+		private Packet[] GetPacketArray(ArraySegment<byte> segment)
+		{
+			int packetCount = Mathf.CeilToInt((float)segment.Count / (float)MaxSinglePacketSize);
+			Packet[] packets = new Packet[packetCount];
+
+			for (int i = 0; i < segment.Count; i += MaxSinglePacketSize)
+			{
+				int fragment = i / MaxSinglePacketSize;
+
+				packets[fragment] = new Packet();
+				packets[fragment].id = packetId;
+				packets[fragment].fragment = fragment;
+				packets[fragment].moreFragments = (segment.Count - i) > MaxSinglePacketSize;
+				packets[fragment].data = new byte[segment.Count - i > MaxSinglePacketSize ? MaxSinglePacketSize : segment.Count - i];
+				Array.Copy(segment.Array, i, packets[fragment].data, 0, packets[fragment].data.Length);
+			}
+			
+			return packets;
 		}
 
 		public override void Shutdown()
@@ -274,126 +297,7 @@ namespace EpicTransport
 			}
 		}
 
-		/*
-		private void OnClientConnect()
-		{
-			connectedClients.Add((int)ServerClientId);
-
-			NetworkEventInfo info = new NetworkEventInfo();
-			info.eventType = NetworkEvent.Connect;
-			info.clientId = ServerClientId;
-			info.receiveTime = Time.realtimeSinceStartup;
-
-			networkEvents.Enqueue(info);
-		}
-		private void OnClientDisconnect()
-		{
-			NetworkEventInfo info = new NetworkEventInfo();
-			info.eventType = NetworkEvent.Disconnect;
-			info.clientId = ServerClientId;
-			info.receiveTime = Time.realtimeSinceStartup;
-
-			networkEvents.Enqueue(info);
-		}
-		private void OnClientDataRecv(byte[] payload, int channel)
-		{
-			if (channel == 3 && false)
-			{
-				if (payload[0] == 0)
-				{
-					payload[0] = 0xff;
-					SendInternal(ServerClientId, new ArraySegment<byte>(payload), (byte)channel);
-				}
-				else
-				{
-					float sendTime = BitConverter.ToSingle(payload, 1);
-					//pings[(int)ServerClientId] = (ulong)((Time.realtimeSinceStartup - sendTime) / 1000.0f);
-				}
-
-				return;
-			}
-
-			NetworkEventInfo info = new NetworkEventInfo();
-			info.eventType = NetworkEvent.Data;
-			info.clientId = ServerClientId;
-			info.channel = (byte)channel;
-			info.payload = new ArraySegment<byte>(payload);
-			info.receiveTime = Time.realtimeSinceStartup;
-
-			networkEvents.Enqueue(info);
-		}
-		private void OnClientException(Exception e)
-		{
-			NetworkEventInfo info = new NetworkEventInfo();
-			info.eventType = NetworkEvent.Nothing;
-			info.clientId = ServerClientId;
-			info.error = true;
-			info.exception = e;
-			info.receiveTime = Time.realtimeSinceStartup;
-
-			networkEvents.Enqueue(info);
-		}
-
-		private void OnServerConnect(int clientId)
-		{
-			connectedClients.Add(clientId);
-
-			NetworkEventInfo info = new NetworkEventInfo();
-			info.eventType = NetworkEvent.Connect;
-			info.clientId = (ulong)clientId;
-			info.receiveTime = Time.realtimeSinceStartup;
-
-			networkEvents.Enqueue(info);
-		}
-		private void OnServerDisconnect(int clientId)
-		{
-			NetworkEventInfo info = new NetworkEventInfo();
-			info.eventType = NetworkEvent.Disconnect;
-			info.clientId = (ulong)clientId;
-			info.receiveTime = Time.realtimeSinceStartup;
-
-			networkEvents.Enqueue(info);
-		}
-		private void OnServerDataRecv(int clientId, byte[] payload, int channel)
-		{
-			if (channel == 3 && false)
-			{
-				if (payload[0] == 0)
-				{
-					payload[0] = 0xff;
-					SendInternal((ulong)clientId, new ArraySegment<byte>(payload), (byte)channel);
-				}
-				else
-				{
-					float sendTime = BitConverter.ToSingle(payload, 1);
-					//pings[clientId] = (ulong)((Time.realtimeSinceStartup - sendTime) / 1000.0f);
-				}
-
-				return;
-			}
-
-			NetworkEventInfo info = new NetworkEventInfo();
-			info.eventType = NetworkEvent.Data;
-			info.clientId = (ulong)clientId;
-			info.channel = (byte)channel;
-			info.payload = new ArraySegment<byte>(payload);
-			info.receiveTime = Time.realtimeSinceStartup;
-
-			networkEvents.Enqueue(info);
-		}
-		private void OnServerException(int clientId, Exception e)
-		{
-			NetworkEventInfo info = new NetworkEventInfo();
-			info.eventType = NetworkEvent.Nothing;
-			info.clientId = (ulong)clientId;
-			info.error = true;
-			info.exception = e;
-			info.receiveTime = Time.realtimeSinceStartup;
-
-			networkEvents.Enqueue(info);
-		}
-		*/
-
+		
 		private void OnCommonConnect(ulong clientId)
 		{
 			connectedClients.Add(clientId);
@@ -416,7 +320,7 @@ namespace EpicTransport
 		}
 		private void OnCommonDataRecv(ulong clientId, byte[] payload, int channel)
 		{
-			if (channel == 3 && false)
+			if (channel == 0 && false)
 			{
 				if (payload[0] == 0)
 				{

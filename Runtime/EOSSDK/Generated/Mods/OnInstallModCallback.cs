@@ -9,5 +9,6 @@ namespace Epic.OnlineServices.Mods
 	/// <param name="data">A <see cref="InstallModCallbackInfo" /> containing the output information and result</param>
 	public delegate void OnInstallModCallback(InstallModCallbackInfo data);
 
+	[System.Runtime.InteropServices.UnmanagedFunctionPointer(System.Runtime.InteropServices.CallingConvention.StdCall)]
 	internal delegate void OnInstallModCallbackInternal(System.IntPtr data);
 }

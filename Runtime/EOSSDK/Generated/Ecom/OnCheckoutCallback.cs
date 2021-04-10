@@ -9,5 +9,6 @@ namespace Epic.OnlineServices.Ecom
 	/// <param name="data">A <see cref="CheckoutCallbackInfo" /> containing the output information and result</param>
 	public delegate void OnCheckoutCallback(CheckoutCallbackInfo data);
 
+	[System.Runtime.InteropServices.UnmanagedFunctionPointer(System.Runtime.InteropServices.CallingConvention.StdCall)]
 	internal delegate void OnCheckoutCallbackInternal(System.IntPtr data);
 }

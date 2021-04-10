@@ -3,7 +3,7 @@
 
 namespace Epic.OnlineServices.Lobby
 {
-	public sealed class LobbyDetails : Handle
+	public sealed partial class LobbyDetails : Handle
 	{
 		public LobbyDetails()
 		{

@@ -35,6 +35,11 @@ namespace Epic.OnlineServices.Lobby
 		/// </summary>
 		public bool AllowInvites { get; set; }
 
+		/// <summary>
+		/// The main indexed parameter for this lobby, can be any string (ie "Region:GameMode")
+		/// </summary>
+		public string BucketId { get; set; }
+
 		internal void Set(LobbyDetailsInfoInternal? other)
 		{
 			if (other != null)
@@ -45,6 +50,7 @@ namespace Epic.OnlineServices.Lobby
 				AvailableSlots = other.Value.AvailableSlots;
 				MaxMembers = other.Value.MaxMembers;
 				AllowInvites = other.Value.AllowInvites;
+				BucketId = other.Value.BucketId;
 			}
 		}
 
@@ -64,6 +70,7 @@ namespace Epic.OnlineServices.Lobby
 		private uint m_AvailableSlots;
 		private uint m_MaxMembers;
 		private int m_AllowInvites;
+		private System.IntPtr m_BucketId;
 
 		public string LobbyId
 		{
@@ -149,6 +156,21 @@ namespace Epic.OnlineServices.Lobby
 			}
 		}
 
+		public string BucketId
+		{
+			get
+			{
+				string value;
+				Helper.TryMarshalGet(m_BucketId, out value);
+				return value;
+			}
+
+			set
+			{
+				Helper.TryMarshalSet(ref m_BucketId, value);
+			}
+		}
+
 		public void Set(LobbyDetailsInfo other)
 		{
 			if (other != null)
@@ -160,6 +182,7 @@ namespace Epic.OnlineServices.Lobby
 				AvailableSlots = other.AvailableSlots;
 				MaxMembers = other.MaxMembers;
 				AllowInvites = other.AllowInvites;
+				BucketId = other.BucketId;
 			}
 		}
 
@@ -170,6 +193,7 @@ namespace Epic.OnlineServices.Lobby
 
 		public void Dispose()
 		{
+			Helper.TryMarshalDispose(ref m_BucketId);
 		}
 	}
 }

@@ -8,5 +8,6 @@ namespace Epic.OnlineServices.Presence
 	/// </summary>
 	public delegate void OnQueryPresenceCompleteCallback(QueryPresenceCallbackInfo data);
 
+	[System.Runtime.InteropServices.UnmanagedFunctionPointer(System.Runtime.InteropServices.CallingConvention.StdCall)]
 	internal delegate void OnQueryPresenceCompleteCallbackInternal(System.IntPtr data);
 }

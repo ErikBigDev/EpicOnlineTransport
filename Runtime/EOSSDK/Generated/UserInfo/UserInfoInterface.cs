@@ -3,7 +3,7 @@
 
 namespace Epic.OnlineServices.UserInfo
 {
-	public sealed class UserInfoInterface : Handle
+	public sealed partial class UserInfoInterface : Handle
 	{
 		public UserInfoInterface()
 		{

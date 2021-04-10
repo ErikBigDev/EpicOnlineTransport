@@ -8,5 +8,6 @@ namespace Epic.OnlineServices.PlayerDataStorage
 	/// </summary>
 	public delegate void OnWriteFileCompleteCallback(WriteFileCallbackInfo data);
 
+	[System.Runtime.InteropServices.UnmanagedFunctionPointer(System.Runtime.InteropServices.CallingConvention.StdCall)]
 	internal delegate void OnWriteFileCompleteCallbackInternal(System.IntPtr data);
 }

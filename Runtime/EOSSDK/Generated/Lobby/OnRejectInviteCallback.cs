@@ -9,5 +9,6 @@ namespace Epic.OnlineServices.Lobby
 	/// <param name="data">A <see cref="LobbyInterface.RejectInvite" /> CallbackInfo containing the output information and result</param>
 	public delegate void OnRejectInviteCallback(RejectInviteCallbackInfo data);
 
+	[System.Runtime.InteropServices.UnmanagedFunctionPointer(System.Runtime.InteropServices.CallingConvention.StdCall)]
 	internal delegate void OnRejectInviteCallbackInternal(System.IntPtr data);
 }

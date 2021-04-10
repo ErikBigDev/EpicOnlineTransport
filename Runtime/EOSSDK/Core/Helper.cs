@@ -131,6 +131,12 @@ namespace Epic.OnlineServices
 			return TryConvert(source, out target);
 		}
 
+		internal static bool TryMarshalGet<TSource, TTarget>(TSource source, out TTarget target)
+			where TTarget : ISettable, new()
+		{
+			return TryConvert(source, out target);
+		}
+
 		internal static bool TryMarshalGet(int source, out bool target)
 		{
 			return TryConvert(source, out target);
@@ -234,6 +240,19 @@ namespace Epic.OnlineServices
 			return false;
 		}
 
+		internal static bool TryMarshalGet<TTarget, TEnum>(ISettable source, out TTarget target, TEnum currentEnum, TEnum comparisonEnum)
+			where TTarget : ISettable, new()
+		{
+			target = GetDefault<TTarget>();
+
+			if ((int)(object)currentEnum == (int)(object)comparisonEnum)
+			{
+				return TryConvert(source, out target);
+			}
+
+			return false;
+		}
+
 		internal static bool TryMarshalGet<TEnum>(int source, out bool? target, TEnum currentEnum, TEnum comparisonEnum)
 		{
 			target = GetDefault<bool?>();
@@ -278,6 +297,18 @@ namespace Epic.OnlineServices
 			return false;
 		}
 
+		internal static bool TryMarshalGet<TEnum>(IntPtr source, out IntPtr? target, TEnum currentEnum, TEnum comparisonEnum)
+		{
+			target = GetDefault<IntPtr?>();
+
+			if ((int)(object)currentEnum == (int)(object)comparisonEnum)
+			{
+				return TryMarshalGet(source, out target);
+			}
+
+			return false;
+		}
+
 		internal static bool TryMarshalGet<TEnum>(IntPtr source, out string target, TEnum currentEnum, TEnum comparisonEnum)
 		{
 			target = GetDefault<string>();
@@ -309,15 +340,6 @@ namespace Epic.OnlineServices
 			}
 
 			return false;
-		}
-
-		internal static bool TryMarshalGet<TInternal, TPublic>(TInternal source, out TPublic target)
-			where TInternal : struct
-			where TPublic : class, ISettable, new()
-		{
-			target = new TPublic();
-			target.Set(source);
-			return true;
 		}
 
 		internal static bool TryMarshalGet<TCallbackInfoInternal, TCallbackInfo>(IntPtr callbackInfoAddress, out TCallbackInfo callbackInfo, out IntPtr clientDataAddress)
@@ -437,6 +459,23 @@ namespace Epic.OnlineServices
 				TryMarshalDispose(ref disposable);
 
 				if (TryMarshalSet(ref target, source))
+				{
+					currentEnum = comparisonEnum;
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		internal static bool TryMarshalSet<TTarget, TEnum>(ref TTarget target, ISettable source, ref TEnum currentEnum, TEnum comparisonEnum, IDisposable disposable = null)
+			where TTarget : ISettable, new()
+		{
+			if (source != null)
+			{
+				TryMarshalDispose(ref disposable);
+
+				if (TryConvert(source, out target))
 				{
 					currentEnum = comparisonEnum;
 					return true;

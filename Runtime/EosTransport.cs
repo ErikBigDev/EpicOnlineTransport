@@ -238,7 +238,7 @@ namespace EpicTransport {
 				if (connectionId == int.MinValue) {
 					client.Send(packets[i].ToBytes(), channelId);
 				} else {
-					//server.SendAll(connectionId, packets[i].ToBytes(), channelId);
+					server.SendAll((ulong)connectionId, packets[i].ToBytes(), channelId);
 				}
 			}
 

@@ -9,5 +9,6 @@ namespace Epic.OnlineServices.Mods
 	/// <param name="data">A <see cref="UninstallModCallbackInfo" /> containing the output information and result</param>
 	public delegate void OnUninstallModCallback(UninstallModCallbackInfo data);
 
+	[System.Runtime.InteropServices.UnmanagedFunctionPointer(System.Runtime.InteropServices.CallingConvention.StdCall)]
 	internal delegate void OnUninstallModCallbackInternal(System.IntPtr data);
 }

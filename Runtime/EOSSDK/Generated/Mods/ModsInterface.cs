@@ -3,7 +3,7 @@
 
 namespace Epic.OnlineServices.Mods
 {
-	public sealed class ModsInterface : Handle
+	public sealed partial class ModsInterface : Handle
 	{
 		public ModsInterface()
 		{

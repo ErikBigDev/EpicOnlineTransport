@@ -11,6 +11,8 @@ namespace EpicTransport {
 		//private event Action<int> OnDisconnected;
 		//private event Action<int, Exception> OnReceivedError;
 
+		private Dictionary<ulong, ulong> pings = new Dictionary<ulong, ulong>();
+
 		private BidirectionalDictionary<ProductUserId, ulong> epicToMirrorIds;
 		private Dictionary<ProductUserId, SocketId> epicToSocketIds;
 		private int maxConnections;
@@ -57,7 +59,7 @@ namespace EpicTransport {
 				});
 		}
 
-		protected override void OnReceiveInternalData(InternalMessages type, ProductUserId clientUserId, SocketId socketId) {
+		protected override void OnReceiveInternalData(InternalMessages type, ProductUserId clientUserId, SocketId socketId, byte[] payload = null) {
 			if (ignoreAllMessages) {
 				return;
 			}
@@ -96,6 +98,18 @@ namespace EpicTransport {
 						transport.OnCommonErrored.Invoke(0, new Exception("ERROR Unknown Product User ID"));
 					}
 
+					break;
+				case InternalMessages.PING:
+					if (payload[1] == 0)
+					{
+						payload[1] = 0xff;
+						SendInternal(clientUserId, socketId, payload);
+					}
+					else
+					{
+						float sendTime = BitConverter.ToSingle(payload, 2);
+						pings[epicToMirrorIds[clientUserId]] = (ulong)((Time.realtimeSinceStartup - sendTime) / 1000.0f);
+					}
 					break;
 				default:
 					Debug.Log("Received unknown message type");
@@ -188,6 +202,32 @@ namespace EpicTransport {
 			Debug.LogError("Connection Failed, removing user");
 			epicToMirrorIds.Remove(remoteId);
 			epicToSocketIds.Remove(remoteId);
+		}
+
+		public override ulong GetPing(ulong clientId = ulong.MaxValue)
+		{
+			if (pings.ContainsKey(clientId))
+				return pings[clientId];
+			else
+				throw new Exception("Could not find the client");
+		}
+		public override void SendPing()
+		{
+			byte[] data = new byte[6];
+			data[0] = (byte)InternalMessages.PING;
+			data[1] = 0;
+
+			foreach (KeyValuePair<ProductUserId, SocketId> item in epicToSocketIds)
+			{
+				if (deadSockets.Contains(item.Value.SocketName))
+					continue;
+
+				byte[] time = BitConverter.GetBytes(Time.realtimeSinceStartup);
+
+				Buffer.BlockCopy(time, 0, data, 2, 4);
+
+				SendInternal(item.Key, item.Value, data);
+			}
 		}
 	}
 }

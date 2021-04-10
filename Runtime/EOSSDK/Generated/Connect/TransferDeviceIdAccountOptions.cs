@@ -9,7 +9,7 @@ namespace Epic.OnlineServices.Connect
 	public class TransferDeviceIdAccountOptions
 	{
 		/// <summary>
-		/// The primary product user id, currently logged in, that is already associated with a real external user account (such as Epic Games, Playstation, Xbox and other).
+		/// The primary product user id, currently logged in, that is already associated with a real external user account (such as Epic Games, PlayStation(TM)Network, Xbox Live and other).
 		/// 
 		/// The account linking keychain that owns this product user will be preserved and receive
 		/// the Device ID login credentials under it.

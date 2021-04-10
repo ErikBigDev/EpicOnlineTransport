@@ -3,7 +3,7 @@
 
 namespace Epic.OnlineServices.Platform
 {
-	public sealed class PlatformInterface : Handle
+	public sealed partial class PlatformInterface : Handle
 	{
 		public PlatformInterface()
 		{
@@ -31,7 +31,7 @@ namespace Epic.OnlineServices.Platform
 
 		public const int LocalecodeMaxLength = 9;
 
-		public const int OptionsApiLatest = 9;
+		public const int OptionsApiLatest = 10;
 
 		/// <summary>
 		/// Checks if the app was launched through the Epic Launcher, and relaunches it through the Epic Launcher if it wasn't.
@@ -417,6 +417,40 @@ namespace Epic.OnlineServices.Platform
 		}
 
 		/// <summary>
+		/// Get a handle to the Reports Interface.
+		/// eos_reports.h
+		/// eos_reports_types.h
+		/// </summary>
+		/// <returns>
+		/// <see cref="Reports.ReportsInterface" /> handle
+		/// </returns>
+		public Reports.ReportsInterface GetReportsInterface()
+		{
+			var funcResult = EOS_Platform_GetReportsInterface(InnerHandle);
+
+			Reports.ReportsInterface funcResultReturn;
+			Helper.TryMarshalGet(funcResult, out funcResultReturn);
+			return funcResultReturn;
+		}
+
+		/// <summary>
+		/// Get a handle to the Sanctions Interface.
+		/// eos_sanctions.h
+		/// eos_sanctions_types.h
+		/// </summary>
+		/// <returns>
+		/// <see cref="Sanctions.SanctionsInterface" /> handle
+		/// </returns>
+		public Sanctions.SanctionsInterface GetSanctionsInterface()
+		{
+			var funcResult = EOS_Platform_GetSanctionsInterface(InnerHandle);
+
+			Sanctions.SanctionsInterface funcResultReturn;
+			Helper.TryMarshalGet(funcResult, out funcResultReturn);
+			return funcResultReturn;
+		}
+
+		/// <summary>
 		/// Get a handle to the Sessions Interface.
 		/// eos_sessions.h
 		/// eos_sessions_types.h
@@ -520,21 +554,6 @@ namespace Epic.OnlineServices.Platform
 			System.IntPtr optionsAddress = new System.IntPtr();
 			Helper.TryMarshalSet<InitializeOptionsInternal, InitializeOptions>(ref optionsAddress, options);
 
-			if (options.AllocateMemoryFunction != null)
-			{
-				Helper.AddStaticCallback("AllocateMemoryFuncInternalImplementation", options.AllocateMemoryFunction, InitializeOptionsInternal.AllocateMemoryFunction);
-			}
-
-			if (options.ReallocateMemoryFunction != null)
-			{
-				Helper.AddStaticCallback("ReallocateMemoryFuncInternalImplementation", options.ReallocateMemoryFunction, InitializeOptionsInternal.ReallocateMemoryFunction);
-			}
-
-			if (options.ReleaseMemoryFunction != null)
-			{
-				Helper.AddStaticCallback("ReleaseMemoryFuncInternalImplementation", options.ReleaseMemoryFunction, InitializeOptionsInternal.ReleaseMemoryFunction);
-			}
-
 			var funcResult = EOS_Initialize(optionsAddress);
 
 			Helper.TryMarshalDispose(ref optionsAddress);
@@ -627,44 +646,6 @@ namespace Epic.OnlineServices.Platform
 			EOS_Platform_Tick(InnerHandle);
 		}
 
-		[MonoPInvokeCallback(typeof(AllocateMemoryFuncInternal))]
-		internal static System.IntPtr AllocateMemoryFuncInternalImplementation(System.UIntPtr sizeInBytes, System.UIntPtr alignment)
-		{
-			AllocateMemoryFunc callback;
-			if (Helper.TryGetStaticCallback("AllocateMemoryFuncInternalImplementation", out callback))
-			{
-				var funcResult = callback(sizeInBytes, alignment);
-
-				return funcResult;
-			}
-
-			return Helper.GetDefault<System.IntPtr>();
-		}
-
-		[MonoPInvokeCallback(typeof(ReallocateMemoryFuncInternal))]
-		internal static System.IntPtr ReallocateMemoryFuncInternalImplementation(System.IntPtr pointer, System.UIntPtr sizeInBytes, System.UIntPtr alignment)
-		{
-			ReallocateMemoryFunc callback;
-			if (Helper.TryGetStaticCallback("ReallocateMemoryFuncInternalImplementation", out callback))
-			{
-				var funcResult = callback(pointer, sizeInBytes, alignment);
-
-				return funcResult;
-			}
-
-			return Helper.GetDefault<System.IntPtr>();
-		}
-
-		[MonoPInvokeCallback(typeof(ReleaseMemoryFuncInternal))]
-		internal static void ReleaseMemoryFuncInternalImplementation(System.IntPtr pointer)
-		{
-			ReleaseMemoryFunc callback;
-			if (Helper.TryGetStaticCallback("ReleaseMemoryFuncInternalImplementation", out callback))
-			{
-				callback(pointer);
-			}
-		}
-
 		[System.Runtime.InteropServices.DllImport(Config.BinaryName)]
 		internal static extern Result EOS_Platform_CheckForLauncherAndRestart(System.IntPtr handle);
 
@@ -718,6 +699,12 @@ namespace Epic.OnlineServices.Platform
 
 		[System.Runtime.InteropServices.DllImport(Config.BinaryName)]
 		internal static extern System.IntPtr EOS_Platform_GetPresenceInterface(System.IntPtr handle);
+
+		[System.Runtime.InteropServices.DllImport(Config.BinaryName)]
+		internal static extern System.IntPtr EOS_Platform_GetReportsInterface(System.IntPtr handle);
+
+		[System.Runtime.InteropServices.DllImport(Config.BinaryName)]
+		internal static extern System.IntPtr EOS_Platform_GetSanctionsInterface(System.IntPtr handle);
 
 		[System.Runtime.InteropServices.DllImport(Config.BinaryName)]
 		internal static extern System.IntPtr EOS_Platform_GetSessionsInterface(System.IntPtr handle);

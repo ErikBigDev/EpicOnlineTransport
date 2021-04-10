@@ -8,5 +8,6 @@ namespace Epic.OnlineServices.P2P
 	/// </summary>
 	public delegate void OnQueryNATTypeCompleteCallback(OnQueryNATTypeCompleteInfo data);
 
+	[System.Runtime.InteropServices.UnmanagedFunctionPointer(System.Runtime.InteropServices.CallingConvention.StdCall)]
 	internal delegate void OnQueryNATTypeCompleteCallbackInternal(System.IntPtr data);
 }

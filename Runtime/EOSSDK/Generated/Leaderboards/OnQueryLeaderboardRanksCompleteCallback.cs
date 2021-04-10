@@ -9,5 +9,6 @@ namespace Epic.OnlineServices.Leaderboards
 	/// <param name="data">A <see cref="OnQueryLeaderboardRanksCompleteCallbackInfo" /> containing the output information and result</param>
 	public delegate void OnQueryLeaderboardRanksCompleteCallback(OnQueryLeaderboardRanksCompleteCallbackInfo data);
 
+	[System.Runtime.InteropServices.UnmanagedFunctionPointer(System.Runtime.InteropServices.CallingConvention.StdCall)]
 	internal delegate void OnQueryLeaderboardRanksCompleteCallbackInternal(System.IntPtr data);
 }

@@ -3,7 +3,7 @@
 
 namespace Epic.OnlineServices.Sessions
 {
-	public sealed class SessionSearch : Handle
+	public sealed partial class SessionSearch : Handle
 	{
 		public SessionSearch()
 		{

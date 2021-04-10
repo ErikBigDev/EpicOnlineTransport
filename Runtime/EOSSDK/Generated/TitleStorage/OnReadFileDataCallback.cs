@@ -12,5 +12,6 @@ namespace Epic.OnlineServices.TitleStorage
 	/// </returns>
 	public delegate ReadResult OnReadFileDataCallback(ReadFileDataCallbackInfo data);
 
+	[System.Runtime.InteropServices.UnmanagedFunctionPointer(System.Runtime.InteropServices.CallingConvention.StdCall)]
 	internal delegate ReadResult OnReadFileDataCallbackInternal(System.IntPtr data);
 }

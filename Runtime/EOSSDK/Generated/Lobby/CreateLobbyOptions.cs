@@ -36,6 +36,16 @@ namespace Epic.OnlineServices.Lobby
 		/// <seealso cref="Sessions.JoinSessionOptions" />
 		/// </summary>
 		public bool PresenceEnabled { get; set; }
+
+		/// <summary>
+		/// Are members of the lobby allowed to invite others
+		/// </summary>
+		public bool AllowInvites { get; set; }
+
+		/// <summary>
+		/// Bucket ID associated with the lobby
+		/// </summary>
+		public string BucketId { get; set; }
 	}
 
 	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, Pack = 8)]
@@ -46,6 +56,8 @@ namespace Epic.OnlineServices.Lobby
 		private uint m_MaxLobbyMembers;
 		private LobbyPermissionLevel m_PermissionLevel;
 		private int m_PresenceEnabled;
+		private int m_AllowInvites;
+		private System.IntPtr m_BucketId;
 
 		public ProductUserId LocalUserId
 		{
@@ -79,6 +91,22 @@ namespace Epic.OnlineServices.Lobby
 			}
 		}
 
+		public bool AllowInvites
+		{
+			set
+			{
+				Helper.TryMarshalSet(ref m_AllowInvites, value);
+			}
+		}
+
+		public string BucketId
+		{
+			set
+			{
+				Helper.TryMarshalSet(ref m_BucketId, value);
+			}
+		}
+
 		public void Set(CreateLobbyOptions other)
 		{
 			if (other != null)
@@ -88,6 +116,8 @@ namespace Epic.OnlineServices.Lobby
 				MaxLobbyMembers = other.MaxLobbyMembers;
 				PermissionLevel = other.PermissionLevel;
 				PresenceEnabled = other.PresenceEnabled;
+				AllowInvites = other.AllowInvites;
+				BucketId = other.BucketId;
 			}
 		}
 
@@ -98,6 +128,7 @@ namespace Epic.OnlineServices.Lobby
 
 		public void Dispose()
 		{
+			Helper.TryMarshalDispose(ref m_BucketId);
 		}
 	}
 }

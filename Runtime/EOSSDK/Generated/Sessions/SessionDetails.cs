@@ -3,7 +3,7 @@
 
 namespace Epic.OnlineServices.Sessions
 {
-	public sealed class SessionDetails : Handle
+	public sealed partial class SessionDetails : Handle
 	{
 		public SessionDetails()
 		{

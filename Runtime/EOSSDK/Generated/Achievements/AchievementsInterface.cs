@@ -3,7 +3,7 @@
 
 namespace Epic.OnlineServices.Achievements
 {
-	public sealed class AchievementsInterface : Handle
+	public sealed partial class AchievementsInterface : Handle
 	{
 		public AchievementsInterface()
 		{
@@ -61,12 +61,12 @@ namespace Epic.OnlineServices.Achievements
 		/// <summary>
 		/// The most recent version of the <see cref="CopyPlayerAchievementByAchievementIdOptions" /> struct.
 		/// </summary>
-		public const int CopyplayerachievementbyachievementidApiLatest = 1;
+		public const int CopyplayerachievementbyachievementidApiLatest = 2;
 
 		/// <summary>
 		/// The most recent version of the <see cref="CopyPlayerAchievementByIndexOptions" /> struct.
 		/// </summary>
-		public const int CopyplayerachievementbyindexApiLatest = 1;
+		public const int CopyplayerachievementbyindexApiLatest = 2;
 
 		/// <summary>
 		/// The most recent version of the <see cref="CopyUnlockedAchievementByAchievementIdOptions" /> struct.
@@ -113,12 +113,12 @@ namespace Epic.OnlineServices.Achievements
 		/// <summary>
 		/// The most recent version of the <see cref="QueryDefinitions" /> struct.
 		/// </summary>
-		public const int QuerydefinitionsApiLatest = 2;
+		public const int QuerydefinitionsApiLatest = 3;
 
 		/// <summary>
 		/// The most recent version of the <see cref="QueryPlayerAchievements" /> struct.
 		/// </summary>
-		public const int QueryplayerachievementsApiLatest = 1;
+		public const int QueryplayerachievementsApiLatest = 2;
 
 		/// <summary>
 		/// DEPRECATED! Use <see cref="StatthresholdsApiLatest" /> instead.
@@ -278,6 +278,7 @@ namespace Epic.OnlineServices.Achievements
 		/// <see cref="Result.Success" /> if the information is available and passed out in OutDefinition
 		/// <see cref="Result.InvalidParameters" /> if you pass a null pointer for the out parameter
 		/// <see cref="Result.NotFound" /> if the achievement definition is not found
+		/// <see cref="Result.InvalidProductUserID" /> if any of the userid options are incorrect
 		/// </returns>
 		public Result CopyAchievementDefinitionV2ByAchievementId(CopyAchievementDefinitionV2ByAchievementIdOptions options, out DefinitionV2 outDefinition)
 		{
@@ -308,6 +309,7 @@ namespace Epic.OnlineServices.Achievements
 		/// <see cref="Result.Success" /> if the information is available and passed out in OutDefinition
 		/// <see cref="Result.InvalidParameters" /> if you pass a null pointer for the out parameter
 		/// <see cref="Result.NotFound" /> if the achievement definition is not found
+		/// <see cref="Result.InvalidProductUserID" /> if any of the userid options are incorrect
 		/// </returns>
 		public Result CopyAchievementDefinitionV2ByIndex(CopyAchievementDefinitionV2ByIndexOptions options, out DefinitionV2 outDefinition)
 		{
@@ -338,6 +340,7 @@ namespace Epic.OnlineServices.Achievements
 		/// <see cref="Result.Success" /> if the information is available and passed out in OutAchievement
 		/// <see cref="Result.InvalidParameters" /> if you pass a null pointer for the out parameter
 		/// <see cref="Result.NotFound" /> if the player achievement is not found
+		/// <see cref="Result.InvalidProductUserID" /> if you pass an invalid user ID
 		/// </returns>
 		public Result CopyPlayerAchievementByAchievementId(CopyPlayerAchievementByAchievementIdOptions options, out PlayerAchievement outAchievement)
 		{
@@ -368,6 +371,7 @@ namespace Epic.OnlineServices.Achievements
 		/// <see cref="Result.Success" /> if the information is available and passed out in OutAchievement
 		/// <see cref="Result.InvalidParameters" /> if you pass a null pointer for the out parameter
 		/// <see cref="Result.NotFound" /> if the player achievement is not found
+		/// <see cref="Result.InvalidProductUserID" /> if you pass an invalid user ID
 		/// </returns>
 		public Result CopyPlayerAchievementByIndex(CopyPlayerAchievementByIndexOptions options, out PlayerAchievement outAchievement)
 		{
@@ -551,7 +555,8 @@ namespace Epic.OnlineServices.Achievements
 		/// <param name="completionDelegate">This function is called when the query player achievements operation completes.</param>
 		/// <returns>
 		/// <see cref="Result.Success" /> if the operation completes successfully
-		/// <see cref="Result.InvalidParameters" /> if any of the options are incorrect
+		/// <see cref="Result.InvalidProductUserID" /> if any of the userid options are incorrect
+		/// <see cref="Result.InvalidParameters" /> if any of the other options are incorrect
 		/// </returns>
 		public void QueryPlayerAchievements(QueryPlayerAchievementsOptions options, object clientData, OnQueryPlayerAchievementsCompleteCallback completionDelegate)
 		{

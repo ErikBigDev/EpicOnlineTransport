@@ -722,6 +722,14 @@ namespace Epic.OnlineServices
 		/// </summary>
 		ModsUnsupportedOS = 11016,
 		/// <summary>
+		/// The number of available Snapshot IDs have all been exhausted.
+		/// </summary>
+		ProgressionSnapshotSnapshotIdUnavailable = 14000,
+		/// <summary>
+		/// The KWS user does not have a parental email associated with the account. The parent account was unlinked or deleted
+		/// </summary>
+		ParentEmailMissing = 15000,
+		/// <summary>
 		/// An unexpected error that we cannot identify has occurred.
 		/// </summary>
 		UnexpectedError = 0x7FFFFFFF

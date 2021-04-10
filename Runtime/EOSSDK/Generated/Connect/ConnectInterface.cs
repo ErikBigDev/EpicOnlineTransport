@@ -3,7 +3,7 @@
 
 namespace Epic.OnlineServices.Connect
 {
-	public sealed class ConnectInterface : Handle
+	public sealed partial class ConnectInterface : Handle
 	{
 		public ConnectInterface()
 		{
@@ -149,7 +149,7 @@ namespace Epic.OnlineServices.Connect
 		public const int UserlogininfoApiLatest = 1;
 
 		/// <summary>
-		/// Max length of a display name, not including the terminating null
+		/// Max length of a display name, not including the terminating null.
 		/// </summary>
 		public const int UserlogininfoDisplaynameMaxLength = 32;
 
@@ -158,13 +158,13 @@ namespace Epic.OnlineServices.Connect
 		/// Notification is approximately 10 minutes prior to expiration.
 		/// Call <see cref="Login" /> again with valid third party credentials to refresh access
 		/// 
-		/// @note must call RemoveNotifyAuthExpiration to remove the notification
+		/// @note must call RemoveNotifyAuthExpiration to remove the notification.
 		/// </summary>
-		/// <param name="options">structure containing the API version of the callback to use</param>
-		/// <param name="clientData">arbitrary data that is passed back to you in the callback</param>
-		/// <param name="notification">a callback that is fired when the authentication is about to expire</param>
+		/// <param name="options">structure containing the API version of the callback to use.</param>
+		/// <param name="clientData">arbitrary data that is passed back to you in the callback.</param>
+		/// <param name="notification">a callback that is fired when the authentication is about to expire.</param>
 		/// <returns>
-		/// handle representing the registered callback
+		/// handle representing the registered callback.
 		/// </returns>
 		public ulong AddNotifyAuthExpiration(AddNotifyAuthExpirationOptions options, object clientData, OnAuthExpirationCallback notification)
 		{
@@ -187,13 +187,14 @@ namespace Epic.OnlineServices.Connect
 
 		/// <summary>
 		/// Register to receive user login status updates.
-		/// @note must call RemoveNotifyLoginStatusChanged to remove the notification
+		/// 
+		/// @note must call RemoveNotifyLoginStatusChanged to remove the notification.
 		/// </summary>
-		/// <param name="options">structure containing the API version of the callback to use</param>
-		/// <param name="clientData">arbitrary data that is passed back to you in the callback</param>
-		/// <param name="notification">a callback that is fired when the login status for a user changes</param>
+		/// <param name="options">structure containing the API version of the callback to use.</param>
+		/// <param name="clientData">arbitrary data that is passed back to you in the callback.</param>
+		/// <param name="notification">a callback that is fired when the login status for a user changes.</param>
 		/// <returns>
-		/// handle representing the registered callback
+		/// handle representing the registered callback.
 		/// </returns>
 		public ulong AddNotifyLoginStatusChanged(AddNotifyLoginStatusChangedOptions options, object clientData, OnLoginStatusChangedCallback notification)
 		{
@@ -222,10 +223,10 @@ namespace Epic.OnlineServices.Connect
 		/// <param name="options">Structure containing the target external account ID.</param>
 		/// <param name="outExternalAccountInfo">The external account info data for the user with given external account ID.</param>
 		/// <returns>
-		/// An <see cref="Result" /> that indicates the external account data was copied into the OutExternalAccountInfo
-		/// <see cref="Result.Success" /> if the information is available and passed out in OutExternalAccountInfo
-		/// <see cref="Result.InvalidParameters" /> if you pass a null pointer for the out parameter
-		/// <see cref="Result.NotFound" /> if the account data doesn't exist or hasn't been queried yet
+		/// An <see cref="Result" /> that indicates the external account data was copied into the OutExternalAccountInfo.
+		/// <see cref="Result.Success" /> if the information is available and passed out in OutExternalAccountInfo.
+		/// <see cref="Result.InvalidParameters" /> if you pass a null pointer for the out parameter.
+		/// <see cref="Result.NotFound" /> if the account data doesn't exist or hasn't been queried yet.
 		/// </returns>
 		public Result CopyProductUserExternalAccountByAccountId(CopyProductUserExternalAccountByAccountIdOptions options, out ExternalAccountInfo outExternalAccountInfo)
 		{
@@ -254,10 +255,10 @@ namespace Epic.OnlineServices.Connect
 		/// <param name="options">Structure containing the target external account type.</param>
 		/// <param name="outExternalAccountInfo">The external account info data for the user with given external account type.</param>
 		/// <returns>
-		/// An <see cref="Result" /> that indicates the external account data was copied into the OutExternalAccountInfo
-		/// <see cref="Result.Success" /> if the information is available and passed out in OutExternalAccountInfo
-		/// <see cref="Result.InvalidParameters" /> if you pass a null pointer for the out parameter
-		/// <see cref="Result.NotFound" /> if the account data doesn't exist or hasn't been queried yet
+		/// An <see cref="Result" /> that indicates the external account data was copied into the OutExternalAccountInfo.
+		/// <see cref="Result.Success" /> if the information is available and passed out in OutExternalAccountInfo.
+		/// <see cref="Result.InvalidParameters" /> if you pass a null pointer for the out parameter.
+		/// <see cref="Result.NotFound" /> if the account data doesn't exist or hasn't been queried yet.
 		/// </returns>
 		public Result CopyProductUserExternalAccountByAccountType(CopyProductUserExternalAccountByAccountTypeOptions options, out ExternalAccountInfo outExternalAccountInfo)
 		{
@@ -286,10 +287,10 @@ namespace Epic.OnlineServices.Connect
 		/// <param name="options">Structure containing the target index.</param>
 		/// <param name="outExternalAccountInfo">The external account info data for the user with given index.</param>
 		/// <returns>
-		/// An <see cref="Result" /> that indicates the external account data was copied into the OutExternalAccountInfo
-		/// <see cref="Result.Success" /> if the information is available and passed out in OutExternalAccountInfo
-		/// <see cref="Result.InvalidParameters" /> if you pass a null pointer for the out parameter
-		/// <see cref="Result.NotFound" /> if the account data doesn't exist or hasn't been queried yet
+		/// An <see cref="Result" /> that indicates the external account data was copied into the OutExternalAccountInfo.
+		/// <see cref="Result.Success" /> if the information is available and passed out in OutExternalAccountInfo.
+		/// <see cref="Result.InvalidParameters" /> if you pass a null pointer for the out parameter.
+		/// <see cref="Result.NotFound" /> if the account data doesn't exist or hasn't been queried yet.
 		/// </returns>
 		public Result CopyProductUserExternalAccountByIndex(CopyProductUserExternalAccountByIndexOptions options, out ExternalAccountInfo outExternalAccountInfo)
 		{
@@ -318,10 +319,10 @@ namespace Epic.OnlineServices.Connect
 		/// <param name="options">Structure containing the target external account ID.</param>
 		/// <param name="outExternalAccountInfo">The external account info data last logged in for the user.</param>
 		/// <returns>
-		/// An <see cref="Result" /> that indicates the external account data was copied into the OutExternalAccountInfo
-		/// <see cref="Result.Success" /> if the information is available and passed out in OutExternalAccountInfo
-		/// <see cref="Result.InvalidParameters" /> if you pass a null pointer for the out parameter
-		/// <see cref="Result.NotFound" /> if the account data doesn't exist or hasn't been queried yet
+		/// An <see cref="Result" /> that indicates the external account data was copied into the OutExternalAccountInfo.
+		/// <see cref="Result.Success" /> if the information is available and passed out in OutExternalAccountInfo.
+		/// <see cref="Result.InvalidParameters" /> if you pass a null pointer for the out parameter.
+		/// <see cref="Result.NotFound" /> if the account data doesn't exist or hasn't been queried yet.
 		/// </returns>
 		public Result CopyProductUserInfo(CopyProductUserInfoOptions options, out ExternalAccountInfo outExternalAccountInfo)
 		{
@@ -384,11 +385,11 @@ namespace Epic.OnlineServices.Connect
 		}
 
 		/// <summary>
-		/// Create an account association with the Epic Online Service as a product user given their external auth credentials
+		/// Create an account association with the Epic Online Service as a product user given their external auth credentials.
 		/// </summary>
-		/// <param name="options">structure containing a continuance token from a "user not found" response during Login (always try login first)</param>
-		/// <param name="clientData">arbitrary data that is passed back to you in the CompletionDelegate</param>
-		/// <param name="completionDelegate">a callback that is fired when the create operation completes, either successfully or in error</param>
+		/// <param name="options">structure containing a continuance token from a "user not found" response during Login (always try login first).</param>
+		/// <param name="clientData">arbitrary data that is passed back to you in the CompletionDelegate.</param>
+		/// <param name="completionDelegate">a callback that is fired when the create operation completes, either successfully or in error.</param>
 		public void CreateUser(CreateUserOptions options, object clientData, OnCreateUserCallback completionDelegate)
 		{
 			System.IntPtr optionsAddress = new System.IntPtr();
@@ -410,9 +411,9 @@ namespace Epic.OnlineServices.Connect
 		/// The deletion is permanent and it is not possible to recover lost game data and progression
 		/// if the Device ID had not been linked with at least one real external user account.
 		/// </summary>
-		/// <param name="options">structure containing operation input parameters</param>
-		/// <param name="clientData">arbitrary data that is passed back to you in the CompletionDelegate</param>
-		/// <param name="completionDelegate">a callback that is fired when the delete operation completes, either successfully or in error</param>
+		/// <param name="options">structure containing operation input parameters.</param>
+		/// <param name="clientData">arbitrary data that is passed back to you in the CompletionDelegate.</param>
+		/// <param name="completionDelegate">a callback that is fired when the delete operation completes, either successfully or in error.</param>
 		public void DeleteDeviceId(DeleteDeviceIdOptions options, object clientData, OnDeleteDeviceIdCallback completionDelegate)
 		{
 			System.IntPtr optionsAddress = new System.IntPtr();
@@ -429,11 +430,11 @@ namespace Epic.OnlineServices.Connect
 		}
 
 		/// <summary>
-		/// Fetch a Product User ID that maps to an external account ID cached from a previous query
+		/// Fetch a Product User ID that maps to an external account ID cached from a previous query.
 		/// </summary>
-		/// <param name="options">structure containing the local user and target external account ID</param>
+		/// <param name="options">structure containing the local user and target external account ID.</param>
 		/// <returns>
-		/// The Product User ID, previously retrieved from the backend service, for the given target external account
+		/// The Product User ID, previously retrieved from the backend service, for the given target external account.
 		/// </returns>
 		public ProductUserId GetExternalAccountMapping(GetExternalAccountMappingsOptions options)
 		{
@@ -450,11 +451,11 @@ namespace Epic.OnlineServices.Connect
 		}
 
 		/// <summary>
-		/// Fetch a Product User ID that is logged in. This Product User ID is in the Epic Online Services namespace
+		/// Fetch a Product User ID that is logged in. This Product User ID is in the Epic Online Services namespace.
 		/// </summary>
 		/// <param name="index">an index into the list of logged in users. If the index is out of bounds, the returned Product User ID will be invalid.</param>
 		/// <returns>
-		/// the Product User ID associated with the index passed
+		/// the Product User ID associated with the index passed.
 		/// </returns>
 		public ProductUserId GetLoggedInUserByIndex(int index)
 		{
@@ -481,9 +482,9 @@ namespace Epic.OnlineServices.Connect
 		/// <summary>
 		/// Fetches the login status for an Product User ID. This Product User ID is considered logged in as long as the underlying access token has not expired.
 		/// </summary>
-		/// <param name="localUserId">the Product User ID of the user being queried</param>
+		/// <param name="localUserId">the Product User ID of the user being queried.</param>
 		/// <returns>
-		/// the enum value of a user's login status
+		/// the enum value of a user's login status.
 		/// </returns>
 		public LoginStatus GetLoginStatus(ProductUserId localUserId)
 		{
@@ -501,7 +502,7 @@ namespace Epic.OnlineServices.Connect
 		/// </summary>
 		/// <param name="options">The Options associated with retrieving the external account info count.</param>
 		/// <returns>
-		/// Number of external accounts or 0 otherwise
+		/// Number of external accounts or 0 otherwise.
 		/// </returns>
 		public uint GetProductUserExternalAccountCount(GetProductUserExternalAccountCountOptions options)
 		{
@@ -516,7 +517,7 @@ namespace Epic.OnlineServices.Connect
 		}
 
 		/// <summary>
-		/// Fetch an external account ID, in string form, that maps to a given Product User ID
+		/// Fetch an external account ID, in string form, that maps to a given Product User ID.
 		/// </summary>
 		/// <param name="options">structure containing the local user and target Product User ID</param>
 		/// <param name="outBuffer">The buffer into which the external account ID data should be written. The buffer must be long enough to hold a string of <see cref="ExternalAccountIdMaxLength" />.</param>
@@ -526,11 +527,11 @@ namespace Epic.OnlineServices.Connect
 		/// When the function returns, this parameter will be filled with the length of the string copied into OutBuffer.
 		/// </param>
 		/// <returns>
-		/// An <see cref="Result" /> that indicates the external account ID was copied into the OutBuffer
-		/// <see cref="Result.Success" /> if the information is available and passed out in OutUserInfo
-		/// <see cref="Result.InvalidParameters" /> if you pass a null pointer for the out parameter
-		/// <see cref="Result.NotFound" /> if the mapping doesn't exist or hasn't been queried yet
-		/// <see cref="Result.LimitExceeded" /> - The OutBuffer is not large enough to receive the external account ID. InOutBufferLength contains the required minimum length to perform the operation successfully.
+		/// An <see cref="Result" /> that indicates the external account ID was copied into the OutBuffer.
+		/// <see cref="Result.Success" /> if the information is available and passed out in OutUserInfo.
+		/// <see cref="Result.InvalidParameters" /> if you pass a null pointer for the out parameter.
+		/// <see cref="Result.NotFound" /> if the mapping doesn't exist or hasn't been queried yet.
+		/// <see cref="Result.LimitExceeded" /> if the OutBuffer is not large enough to receive the external account ID. InOutBufferLength contains the required minimum length to perform the operation successfully.
 		/// </returns>
 		public Result GetProductUserIdMapping(GetProductUserIdMappingOptions options, out string outBuffer)
 		{
@@ -552,11 +553,11 @@ namespace Epic.OnlineServices.Connect
 		}
 
 		/// <summary>
-		/// Link a set of external auth credentials with an existing product user on the Epic Online Service
+		/// Link a set of external auth credentials with an existing product user on the Epic Online Service.
 		/// </summary>
-		/// <param name="options">structure containing a continuance token from a "user not found" response during Login (always try login first) and a currently logged in user not already associated with this external auth provider</param>
-		/// <param name="clientData">arbitrary data that is passed back to you in the CompletionDelegate</param>
-		/// <param name="completionDelegate">a callback that is fired when the link operation completes, either successfully or in error</param>
+		/// <param name="options">structure containing a continuance token from a "user not found" response during Login (always try login first) and a currently logged in user not already associated with this external auth provider.</param>
+		/// <param name="clientData">arbitrary data that is passed back to you in the CompletionDelegate.</param>
+		/// <param name="completionDelegate">a callback that is fired when the link operation completes, either successfully or in error.</param>
 		public void LinkAccount(LinkAccountOptions options, object clientData, OnLinkAccountCallback completionDelegate)
 		{
 			System.IntPtr optionsAddress = new System.IntPtr();
@@ -575,9 +576,9 @@ namespace Epic.OnlineServices.Connect
 		/// <summary>
 		/// Login/Authenticate given a valid set of external auth credentials.
 		/// </summary>
-		/// <param name="options">structure containing the external account credentials and type to use during the login operation</param>
-		/// <param name="clientData">arbitrary data that is passed back to you in the CompletionDelegate</param>
-		/// <param name="completionDelegate">a callback that is fired when the login operation completes, either successfully or in error</param>
+		/// <param name="options">structure containing the external account credentials and type to use during the login operation.</param>
+		/// <param name="clientData">arbitrary data that is passed back to you in the CompletionDelegate.</param>
+		/// <param name="completionDelegate">a callback that is fired when the login operation completes, either successfully or in error.</param>
 		public void Login(LoginOptions options, object clientData, OnLoginCallback completionDelegate)
 		{
 			System.IntPtr optionsAddress = new System.IntPtr();
@@ -594,11 +595,12 @@ namespace Epic.OnlineServices.Connect
 		}
 
 		/// <summary>
-		/// Retrieve the equivalent Product User IDs from a list of external account IDs from supported account providers. The values will be cached and retrievable through <see cref="GetExternalAccountMapping" />.
+		/// Retrieve the equivalent Product User IDs from a list of external account IDs from supported account providers.
+		/// The values will be cached and retrievable through <see cref="GetExternalAccountMapping" />.
 		/// </summary>
-		/// <param name="options">structure containing a list of external account IDs, in string form, to query for the Product User ID representation</param>
-		/// <param name="clientData">arbitrary data that is passed back to you in the CompletionDelegate</param>
-		/// <param name="completionDelegate">a callback that is fired when the query operation completes, either successfully or in error</param>
+		/// <param name="options">structure containing a list of external account IDs, in string form, to query for the Product User ID representation.</param>
+		/// <param name="clientData">arbitrary data that is passed back to you in the CompletionDelegate.</param>
+		/// <param name="completionDelegate">a callback that is fired when the query operation completes, either successfully or in error.</param>
 		public void QueryExternalAccountMappings(QueryExternalAccountMappingsOptions options, object clientData, OnQueryExternalAccountMappingsCallback completionDelegate)
 		{
 			System.IntPtr optionsAddress = new System.IntPtr();
@@ -628,9 +630,9 @@ namespace Epic.OnlineServices.Connect
 		/// <seealso cref="CopyProductUserExternalAccountByAccountId" />
 		/// <seealso cref="CopyProductUserInfo" />
 		/// </summary>
-		/// <param name="options">structure containing a list of Product User IDs to query for the external account representation</param>
-		/// <param name="clientData">arbitrary data that is passed back to you in the CompletionDelegate</param>
-		/// <param name="completionDelegate">a callback that is fired when the query operation completes, either successfully or in error</param>
+		/// <param name="options">structure containing a list of Product User IDs to query for the external account representation.</param>
+		/// <param name="clientData">arbitrary data that is passed back to you in the CompletionDelegate.</param>
+		/// <param name="completionDelegate">a callback that is fired when the query operation completes, either successfully or in error.</param>
 		public void QueryProductUserIdMappings(QueryProductUserIdMappingsOptions options, object clientData, OnQueryProductUserIdMappingsCallback completionDelegate)
 		{
 			System.IntPtr optionsAddress = new System.IntPtr();
@@ -649,7 +651,7 @@ namespace Epic.OnlineServices.Connect
 		/// <summary>
 		/// Unregister from receiving expiration notifications.
 		/// </summary>
-		/// <param name="inId">handle representing the registered callback</param>
+		/// <param name="inId">handle representing the registered callback.</param>
 		public void RemoveNotifyAuthExpiration(ulong inId)
 		{
 			Helper.TryRemoveCallbackByNotificationId(inId);
@@ -660,7 +662,7 @@ namespace Epic.OnlineServices.Connect
 		/// <summary>
 		/// Unregister from receiving user login status updates.
 		/// </summary>
-		/// <param name="inId">handle representing the registered callback</param>
+		/// <param name="inId">handle representing the registered callback.</param>
 		public void RemoveNotifyLoginStatusChanged(ulong inId)
 		{
 			Helper.TryRemoveCallbackByNotificationId(inId);
@@ -670,7 +672,7 @@ namespace Epic.OnlineServices.Connect
 
 		/// <summary>
 		/// Transfer a Device ID pseudo-account and the product user associated with it into another
-		/// keychain linked with real user accounts (such as Epic Games, Playstation, Xbox, and other).
+		/// keychain linked with real user accounts (such as Epic Games, PlayStation(TM)Network, Xbox Live, and other).
 		/// 
 		/// This function allows transferring a product user, i.e. the local user's game progression
 		/// backend data from a Device ID owned keychain into a keychain with real user accounts
@@ -728,9 +730,9 @@ namespace Epic.OnlineServices.Connect
 		/// <seealso cref="Login" />
 		/// <seealso cref="CreateDeviceId" />
 		/// </summary>
-		/// <param name="options">structure containing the logged in product users and specifying which one will be preserved</param>
-		/// <param name="clientData">arbitrary data that is passed back to you in the CompletionDelegate</param>
-		/// <param name="completionDelegate">a callback that is fired when the transfer operation completes, either successfully or in error</param>
+		/// <param name="options">structure containing the logged in product users and specifying which one will be preserved.</param>
+		/// <param name="clientData">arbitrary data that is passed back to you in the CompletionDelegate.</param>
+		/// <param name="completionDelegate">a callback that is fired when the transfer operation completes, either successfully or in error.</param>
 		public void TransferDeviceIdAccount(TransferDeviceIdAccountOptions options, object clientData, OnTransferDeviceIdAccountCallback completionDelegate)
 		{
 			System.IntPtr optionsAddress = new System.IntPtr();
@@ -759,7 +761,7 @@ namespace Epic.OnlineServices.Connect
 		/// and product user and then use the <see cref="Login" /> and <see cref="LinkAccount" /> APIs to link the local native platform
 		/// account with that previously created existing product user and its owning keychain.
 		/// 
-		/// In another secnario, the user may simply want to disassociate the account that they have logged in with from the current
+		/// In another scenario, the user may simply want to disassociate the account that they have logged in with from the current
 		/// keychain that it is linked with, perhaps to link it against another keychain or to separate the game progressions again.
 		/// 
 		/// In order to protect against account theft, it is only possible to unlink user accounts that have been authenticated
@@ -770,9 +772,9 @@ namespace Epic.OnlineServices.Connect
 		/// authenticating with one of the other linked accounts in the keychain. These restrictions limit the potential attack surface
 		/// related to account theft scenarios.
 		/// </summary>
-		/// <param name="options">structure containing operation input parameters</param>
-		/// <param name="clientData">arbitrary data that is passed back to you in the CompletionDelegate</param>
-		/// <param name="completionDelegate">a callback that is fired when the unlink operation completes, either successfully or in error</param>
+		/// <param name="options">structure containing operation input parameters.</param>
+		/// <param name="clientData">arbitrary data that is passed back to you in the CompletionDelegate.</param>
+		/// <param name="completionDelegate">a callback that is fired when the unlink operation completes, either successfully or in error.</param>
 		public void UnlinkAccount(UnlinkAccountOptions options, object clientData, OnUnlinkAccountCallback completionDelegate)
 		{
 			System.IntPtr optionsAddress = new System.IntPtr();

@@ -3,7 +3,7 @@
 
 namespace Epic.OnlineServices.Lobby
 {
-	public sealed class LobbyInterface : Handle
+	public sealed partial class LobbyInterface : Handle
 	{
 		public LobbyInterface()
 		{
@@ -71,7 +71,7 @@ namespace Epic.OnlineServices.Lobby
 		/// <summary>
 		/// The most recent version of the <see cref="CreateLobby" /> API.
 		/// </summary>
-		public const int CreatelobbyApiLatest = 2;
+		public const int CreatelobbyApiLatest = 4;
 
 		/// <summary>
 		/// The most recent version of the <see cref="CreateLobbySearch" /> API.
@@ -116,7 +116,7 @@ namespace Epic.OnlineServices.Lobby
 		/// <summary>
 		/// All lobbies are referenced by a unique lobby ID
 		/// </summary>
-		public const int MaxLobbies = 4;
+		public const int MaxLobbies = 16;
 
 		public const int MaxLobbyMembers = 64;
 
@@ -136,6 +136,11 @@ namespace Epic.OnlineServices.Lobby
 		/// The most recent version of the <see cref="RejectInvite" /> API.
 		/// </summary>
 		public const int RejectinviteApiLatest = 1;
+
+		/// <summary>
+		/// Search for a matching bucket ID (value is string)
+		/// </summary>
+		public const string SearchBucketId = "bucket";
 
 		/// <summary>
 		/// Search for lobbies that contain at least this number of members (value is int)
@@ -164,11 +169,11 @@ namespace Epic.OnlineServices.Lobby
 
 		/// <summary>
 		/// Register to receive notifications about lobby join game accepted by local user via the overlay.
-		/// @note must call RemoveNotifyJoinLobbyAccepted to remove the notification
+		/// @note must call <see cref="RemoveNotifyJoinLobbyAccepted" /> to remove the notification
 		/// </summary>
 		/// <param name="options">Structure containing information about the request.</param>
 		/// <param name="clientData">Arbitrary data that is passed back to you in the CompletionDelegate.</param>
-		/// <param name="notificationFn">A callback that is fired when a a notification is received.</param>
+		/// <param name="notificationFn">A callback that is fired when a notification is received.</param>
 		/// <returns>
 		/// handle representing the registered callback
 		/// </returns>

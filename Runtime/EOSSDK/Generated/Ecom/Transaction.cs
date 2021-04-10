@@ -3,7 +3,7 @@
 
 namespace Epic.OnlineServices.Ecom
 {
-	public sealed class Transaction : Handle
+	public sealed partial class Transaction : Handle
 	{
 		public Transaction()
 		{

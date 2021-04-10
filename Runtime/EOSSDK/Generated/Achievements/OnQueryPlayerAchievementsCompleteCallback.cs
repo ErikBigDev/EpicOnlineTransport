@@ -10,5 +10,6 @@ namespace Epic.OnlineServices.Achievements
 	/// <param name="data">An <see cref="OnQueryPlayerAchievementsCompleteCallbackInfo" /> containing the output information and result</param>
 	public delegate void OnQueryPlayerAchievementsCompleteCallback(OnQueryPlayerAchievementsCompleteCallbackInfo data);
 
+	[System.Runtime.InteropServices.UnmanagedFunctionPointer(System.Runtime.InteropServices.CallingConvention.StdCall)]
 	internal delegate void OnQueryPlayerAchievementsCompleteCallbackInternal(System.IntPtr data);
 }

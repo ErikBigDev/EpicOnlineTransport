@@ -3,7 +3,7 @@
 
 namespace Epic.OnlineServices.Presence
 {
-	public sealed class PresenceModification : Handle
+	public sealed partial class PresenceModification : Handle
 	{
 		public PresenceModification()
 		{

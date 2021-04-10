@@ -105,6 +105,22 @@ namespace Epic.OnlineServices.Logging
 		/// </summary>
 		Mods = 23,
 		/// <summary>
+		/// Logs related to reports client.
+		/// </summary>
+		Reports = 25,
+		/// <summary>
+		/// Logs related to the Sanctions service
+		/// </summary>
+		Sanctions = 26,
+		/// <summary>
+		/// Logs related to the Progression Snapshot service
+		/// </summary>
+		ProgressionSnapshots = 27,
+		/// <summary>
+		/// Logs related to the Kids Web Services integration
+		/// </summary>
+		Kws = 28,
+		/// <summary>
 		/// Not a real log category. Used by <see cref="LoggingInterface.SetLogLevel" /> to set the log level for all categories at the same time
 		/// </summary>
 		AllCategories = 0x7fffffff

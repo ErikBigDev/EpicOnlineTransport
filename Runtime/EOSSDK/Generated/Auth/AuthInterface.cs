@@ -3,7 +3,7 @@
 
 namespace Epic.OnlineServices.Auth
 {
-	public sealed class AuthInterface : Handle
+	public sealed partial class AuthInterface : Handle
 	{
 		public AuthInterface()
 		{

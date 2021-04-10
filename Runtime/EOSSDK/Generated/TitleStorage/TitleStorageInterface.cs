@@ -3,7 +3,7 @@
 
 namespace Epic.OnlineServices.TitleStorage
 {
-	public sealed class TitleStorageInterface : Handle
+	public sealed partial class TitleStorageInterface : Handle
 	{
 		public TitleStorageInterface()
 		{
@@ -31,7 +31,7 @@ namespace Epic.OnlineServices.TitleStorage
 		/// <summary>
 		/// The most recent version of the <see cref="FileMetadata" /> API.
 		/// </summary>
-		public const int FilemetadataApiLatest = 1;
+		public const int FilemetadataApiLatest = 2;
 
 		/// <summary>
 		/// Maximum File Name Length in bytes

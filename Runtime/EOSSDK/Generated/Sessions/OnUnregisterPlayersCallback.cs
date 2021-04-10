@@ -9,5 +9,6 @@ namespace Epic.OnlineServices.Sessions
 	/// <param name="data">A <see cref="UnregisterPlayersCallbackInfo" /> containing the output information and result</param>
 	public delegate void OnUnregisterPlayersCallback(UnregisterPlayersCallbackInfo data);
 
+	[System.Runtime.InteropServices.UnmanagedFunctionPointer(System.Runtime.InteropServices.CallingConvention.StdCall)]
 	internal delegate void OnUnregisterPlayersCallbackInternal(System.IntPtr data);
 }

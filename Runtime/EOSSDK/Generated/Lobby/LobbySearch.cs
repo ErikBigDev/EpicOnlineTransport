@@ -3,7 +3,7 @@
 
 namespace Epic.OnlineServices.Lobby
 {
-	public sealed class LobbySearch : Handle
+	public sealed partial class LobbySearch : Handle
 	{
 		public LobbySearch()
 		{

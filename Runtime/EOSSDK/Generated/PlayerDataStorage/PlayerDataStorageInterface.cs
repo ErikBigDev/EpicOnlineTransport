@@ -3,7 +3,7 @@
 
 namespace Epic.OnlineServices.PlayerDataStorage
 {
-	public sealed class PlayerDataStorageInterface : Handle
+	public sealed partial class PlayerDataStorageInterface : Handle
 	{
 		public PlayerDataStorageInterface()
 		{
@@ -31,7 +31,7 @@ namespace Epic.OnlineServices.PlayerDataStorage
 		/// </summary>
 		public const int FileMaxSizeBytes = (64 * 1024 * 1024);
 
-		public const int FilemetadataApiLatest = 1;
+		public const int FilemetadataApiLatest = 3;
 
 		/// <summary>
 		/// Maximum File Name Length in bytes

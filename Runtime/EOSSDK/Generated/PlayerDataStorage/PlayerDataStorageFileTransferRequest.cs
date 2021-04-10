@@ -3,7 +3,7 @@
 
 namespace Epic.OnlineServices.PlayerDataStorage
 {
-	public sealed class PlayerDataStorageFileTransferRequest : Handle
+	public sealed partial class PlayerDataStorageFileTransferRequest : Handle
 	{
 		public PlayerDataStorageFileTransferRequest()
 		{

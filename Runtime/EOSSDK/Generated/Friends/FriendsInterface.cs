@@ -3,7 +3,7 @@
 
 namespace Epic.OnlineServices.Friends
 {
-	public sealed class FriendsInterface : Handle
+	public sealed partial class FriendsInterface : Handle
 	{
 		public FriendsInterface()
 		{

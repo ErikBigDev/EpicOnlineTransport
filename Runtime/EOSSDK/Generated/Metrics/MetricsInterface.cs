@@ -3,7 +3,7 @@
 
 namespace Epic.OnlineServices.Metrics
 {
-	public sealed class MetricsInterface : Handle
+	public sealed partial class MetricsInterface : Handle
 	{
 		public MetricsInterface()
 		{

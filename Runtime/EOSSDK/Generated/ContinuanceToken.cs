@@ -3,7 +3,7 @@
 
 namespace Epic.OnlineServices
 {
-	public sealed class ContinuanceToken : Handle
+	public sealed partial class ContinuanceToken : Handle
 	{
 		public ContinuanceToken()
 		{
@@ -14,12 +14,12 @@ namespace Epic.OnlineServices
 		}
 
 		/// <summary>
-		/// Retrieve a null-terminated string-ified continuance token from an <see cref="ContinuanceToken" />.
+		/// Retrieve a null-terminated stringified continuance token from an <see cref="ContinuanceToken" />.
 		/// 
 		/// To get the required buffer size, call once with OutBuffer set to NULL, InOutBufferLength will contain the buffer size needed.
-		/// Call again with valid params to get the string-ified continuance token which will only contain UTF8-encoded printable characters (excluding the null-terminator).
+		/// Call again with valid params to get the stringified continuance token which will only contain UTF8-encoded printable characters (excluding the null-terminator).
 		/// </summary>
-		/// <param name="continuanceToken">The continuance token for which to retrieve the string-ified version.</param>
+		/// <param name="continuanceToken">The continuance token for which to retrieve the stringified version.</param>
 		/// <param name="outBuffer">The buffer into which the character data should be written</param>
 		/// <param name="inOutBufferLength">
 		/// The size of the OutBuffer in characters.
@@ -27,10 +27,10 @@ namespace Epic.OnlineServices
 		/// When the function returns, this parameter will be filled with the length of the string copied into OutBuffer including the null termination character.
 		/// </param>
 		/// <returns>
-		/// An <see cref="Result" /> that indicates whether the Epic Online Services Account ID string was copied into the OutBuffer.
+		/// An <see cref="Result" /> that indicates whether the continuance token string was copied into the OutBuffer.
 		/// <see cref="Result.Success" /> - The OutBuffer was filled, and InOutBufferLength contains the number of characters copied into OutBuffer including the null terminator.
 		/// <see cref="Result.InvalidParameters" /> - Either OutBuffer or InOutBufferLength were passed as NULL parameters.
-		/// <see cref="Result.InvalidUser" /> - The AccountId is invalid and cannot be string-ified
+		/// <see cref="Result.InvalidUser" /> - The AccountId is invalid and cannot be stringified.
 		/// <see cref="Result.LimitExceeded" /> - The OutBuffer is not large enough to receive the continuance token string. InOutBufferLength contains the required minimum length to perform the operation successfully.
 		/// </returns>
 		public Result ToString(out string outBuffer)

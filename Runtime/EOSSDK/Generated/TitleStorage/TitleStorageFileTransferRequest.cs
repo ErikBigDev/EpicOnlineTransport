@@ -3,7 +3,7 @@
 
 namespace Epic.OnlineServices.TitleStorage
 {
-	public sealed class TitleStorageFileTransferRequest : Handle
+	public sealed partial class TitleStorageFileTransferRequest : Handle
 	{
 		public TitleStorageFileTransferRequest()
 		{

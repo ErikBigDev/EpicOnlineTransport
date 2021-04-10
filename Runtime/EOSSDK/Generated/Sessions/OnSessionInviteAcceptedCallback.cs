@@ -14,5 +14,6 @@ namespace Epic.OnlineServices.Sessions
 	/// </param>
 	public delegate void OnSessionInviteAcceptedCallback(SessionInviteAcceptedCallbackInfo data);
 
+	[System.Runtime.InteropServices.UnmanagedFunctionPointer(System.Runtime.InteropServices.CallingConvention.StdCall)]
 	internal delegate void OnSessionInviteAcceptedCallbackInternal(System.IntPtr data);
 }

@@ -9,5 +9,6 @@ namespace Epic.OnlineServices.Sessions
 	/// <param name="data">A <see cref="StartSessionCallbackInfo" /> containing the output information and result</param>
 	public delegate void OnStartSessionCallback(StartSessionCallbackInfo data);
 
+	[System.Runtime.InteropServices.UnmanagedFunctionPointer(System.Runtime.InteropServices.CallingConvention.StdCall)]
 	internal delegate void OnStartSessionCallbackInternal(System.IntPtr data);
 }

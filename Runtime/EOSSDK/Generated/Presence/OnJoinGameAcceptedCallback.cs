@@ -12,5 +12,6 @@ namespace Epic.OnlineServices.Presence
 	/// </param>
 	public delegate void OnJoinGameAcceptedCallback(JoinGameAcceptedCallbackInfo data);
 
+	[System.Runtime.InteropServices.UnmanagedFunctionPointer(System.Runtime.InteropServices.CallingConvention.StdCall)]
 	internal delegate void OnJoinGameAcceptedCallbackInternal(System.IntPtr data);
 }

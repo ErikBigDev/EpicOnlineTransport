@@ -21,6 +21,8 @@ namespace EpicTransport {
 
 		private TimeSpan ConnectionTimeout;
 
+		private ulong currentPing;
+
 		public bool isConnecting = false;
 		public string hostAddress = "";
 		private ProductUserId hostProductId = null;
@@ -46,6 +48,7 @@ namespace EpicTransport {
 		}
 
 		public async void Connect(string host) {
+			Debug.Log("Connecting");
 			cancelToken = new CancellationTokenSource();
 
 			try {
@@ -137,7 +140,7 @@ namespace EpicTransport {
 			}
 		}
 
-		protected override void OnReceiveInternalData(InternalMessages type, ProductUserId clientUserId, SocketId socketId) {
+		protected override void OnReceiveInternalData(InternalMessages type, ProductUserId clientUserId, SocketId socketId, byte[] payload = null) {
 			if (ignoreAllMessages) {
 				return;
 			}
@@ -156,6 +159,18 @@ namespace EpicTransport {
 					transport.OnCommonDisconnected.Invoke(transport.ServerClientId);
 					//OnDisconnected.Invoke();
 					break;
+				case InternalMessages.PING:
+					if (payload[1] == 0)
+					{
+						payload[1] = 0xff;
+						SendInternal(clientUserId, socketId, payload);
+					}
+					else
+					{
+						float sendTime = BitConverter.ToSingle(payload, 2);
+						currentPing = (ulong)((Time.realtimeSinceStartup - sendTime) / 1000.0f);
+					}
+					break;
 				default:
 					Debug.Log("Received unknown message type");
 					break;
@@ -166,5 +181,25 @@ namespace EpicTransport {
 
 		protected override void OnConnectionFailed(ProductUserId remoteId) => transport.OnCommonDisconnected.Invoke(transport.ServerClientId);
 		public void EosNotInitialized() => transport.OnCommonDisconnected.Invoke(transport.ServerClientId);
+
+		public override ulong GetPing(ulong clientId = ulong.MaxValue)
+		{
+			if (clientId == ulong.MaxValue || clientId == transport.ServerClientId)
+				return currentPing;
+			else
+				throw new Exception("Something went wrong");
+		}
+		public override void SendPing()
+		{
+			byte[] data = new byte[6];
+			data[0] = (byte)InternalMessages.PING;
+			data[1] = 0;
+
+			byte[] time = BitConverter.GetBytes(Time.realtimeSinceStartup);
+
+			Buffer.BlockCopy(time, 0, data, 2, 4);
+
+			SendInternal(hostProductId, socketId, data);
+		}
 	}
 }
